@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Invoice {{ $invoice->invoice_number }}</title>
+    <title>Supplier Return {{ $supplierReturn->return_number }}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -33,37 +33,37 @@
             color: #666;
         }
         
-        .invoice-info {
+        .return-info {
             text-align: right;
         }
         
-        .invoice-info h2 {
+        .return-info h2 {
             margin: 0 0 10px 0;
             font-size: 20px;
             color: #333;
         }
         
-        .invoice-details {
+        .return-details {
             background: #f8f9fa;
             padding: 15px;
             border-radius: 5px;
         }
         
-        .invoice-details p {
+        .return-details p {
             margin: 5px 0;
         }
         
-        .bill-to {
+        .supplier-info {
             margin-bottom: 30px;
         }
         
-        .bill-to h3 {
+        .supplier-info h3 {
             margin: 0 0 10px 0;
             font-size: 16px;
             color: #333;
         }
         
-        .bill-to p {
+        .supplier-info p {
             margin: 3px 0;
         }
         
@@ -144,11 +144,25 @@
             text-transform: uppercase;
         }
         
-        .status-draft { background-color: #6c757d; color: white; }
-        .status-sent { background-color: #17a2b8; color: white; }
-        .status-paid { background-color: #28a745; color: white; }
-        .status-overdue { background-color: #dc3545; color: white; }
-        .status-cancelled { background-color: #ffc107; color: black; }
+        .status-pending { background-color: #ffc107; color: black; }
+        .status-approved { background-color: #17a2b8; color: white; }
+        .status-completed { background-color: #28a745; color: white; }
+        .status-rejected { background-color: #dc3545; color: white; }
+        
+        .reason-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        
+        .reason-defective { background-color: #dc3545; color: white; }
+        .reason-wrong_item { background-color: #ffc107; color: black; }
+        .reason-overstock { background-color: #17a2b8; color: white; }
+        .reason-damaged { background-color: #dc3545; color: white; }
+        .reason-quality_issue { background-color: #ffc107; color: black; }
+        .reason-other { background-color: #6c757d; color: white; }
     </style>
 </head>
 <body>
@@ -162,40 +176,38 @@
             <p>Email: info@gemshop.com</p>
         </div>
         
-        <div class="invoice-info">
-            <h2>INVOICE</h2>
-            <div class="invoice-details">
-                <p><strong>Invoice #:</strong> {{ $invoice->invoice_number }}</p>
-                <p><strong>Date:</strong> {{ $invoice->invoice_date->format('M d, Y') }}</p>
-                <p><strong>Due Date:</strong> {{ $invoice->due_date->format('M d, Y') }}</p>
+        <div class="return-info">
+            <h2>SUPPLIER RETURN</h2>
+            <div class="return-details">
+                <p><strong>Return #:</strong> {{ $supplierReturn->return_number }}</p>
+                <p><strong>Date:</strong> {{ $supplierReturn->return_date->format('M d, Y') }}</p>
                 <p><strong>Status:</strong> 
-                    <span class="status-badge status-{{ $invoice->status }}">
-                        {{ $invoice->status_label }}
+                    <span class="status-badge status-{{ $supplierReturn->status }}">
+                        {{ $supplierReturn->status_label }}
                     </span>
                 </p>
-                @if($invoice->payment_method)
-                    <p><strong>Payment Method:</strong> {{ $invoice->payment_method_label }}</p>
-                @endif
-                @if($invoice->payment_terms)
-                    <p><strong>Payment Terms:</strong> {{ $invoice->payment_terms }}</p>
-                @endif
+                <p><strong>Reason:</strong> 
+                    <span class="reason-badge reason-{{ $supplierReturn->reason }}">
+                        {{ $supplierReturn->reason_label }}
+                    </span>
+                </p>
             </div>
         </div>
     </div>
 
-    <!-- Bill To -->
-    <div class="bill-to">
-        <h3>Bill To:</h3>
-        <p><strong>{{ $invoice->customer->full_name }}</strong></p>
-        <p>{{ $invoice->customer->customer_code }}</p>
-        @if($invoice->customer->email)
-            <p>{{ $invoice->customer->email }}</p>
+    <!-- Supplier Info -->
+    <div class="supplier-info">
+        <h3>Supplier:</h3>
+        <p><strong>{{ $supplierReturn->supplier->company_name }}</strong></p>
+        <p>{{ $supplierReturn->supplier->supplier_code }}</p>
+        @if($supplierReturn->supplier->contact_person)
+            <p>Contact: {{ $supplierReturn->supplier->contact_person }}</p>
         @endif
-        @if($invoice->customer->phone)
-            <p>{{ $invoice->customer->phone }}</p>
+        @if($supplierReturn->supplier->email)
+            <p>{{ $supplierReturn->supplier->email }}</p>
         @endif
-        @if($invoice->customer->address)
-            <p>{{ $invoice->customer->address }}</p>
+        @if($supplierReturn->supplier->phone)
+            <p>{{ $supplierReturn->supplier->phone }}</p>
         @endif
     </div>
 
@@ -212,7 +224,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($invoice->transactionItems as $item)
+            @foreach($supplierReturn->transactionItems as $item)
                 <tr>
                     <td>
                         <strong>{{ $item->item->name }}</strong><br>
@@ -244,34 +256,27 @@
     <div class="summary">
         <div class="summary-row">
             <span>Subtotal:</span>
-            <span>{{ number_format($invoice->subtotal, 2) }} {{ $invoice->currency->code }}</span>
+            <span>{{ number_format($supplierReturn->subtotal, 2) }} {{ $supplierReturn->currency->code }}</span>
         </div>
         <div class="summary-row">
             <span>Discount:</span>
-            <span>{{ number_format($invoice->discount_amount, 2) }} {{ $invoice->currency->code }}</span>
+            <span>{{ number_format($supplierReturn->discount_amount, 2) }} {{ $supplierReturn->currency->code }}</span>
         </div>
         <div class="summary-row">
             <span>Tax:</span>
-            <span>{{ number_format($invoice->tax_amount, 2) }} {{ $invoice->currency->code }}</span>
+            <span>{{ number_format($supplierReturn->tax_amount, 2) }} {{ $supplierReturn->currency->code }}</span>
         </div>
         <div class="summary-row total">
             <span>Total:</span>
-            <span>{{ number_format($invoice->total_amount, 2) }} {{ $invoice->currency->code }}</span>
+            <span>{{ number_format($supplierReturn->total_amount, 2) }} {{ $supplierReturn->currency->code }}</span>
         </div>
     </div>
 
     <!-- Notes -->
-    @if($invoice->notes || $invoice->terms_conditions)
+    @if($supplierReturn->notes)
         <div class="notes">
-            @if($invoice->notes)
-                <h3>Notes:</h3>
-                <p>{{ $invoice->notes }}</p>
-            @endif
-            
-            @if($invoice->terms_conditions)
-                <h3>Terms & Conditions:</h3>
-                <p>{{ $invoice->terms_conditions }}</p>
-            @endif
+            <h3>Notes:</h3>
+            <p>{{ $supplierReturn->notes }}</p>
         </div>
     @endif
 

@@ -21,7 +21,7 @@ class TransactionItem extends Model
     ];
 
     protected $casts = [
-        'quantity' => 'integer',
+        'quantity' => 'decimal:3',
         'unit_price' => 'decimal:2',
         'total_price' => 'decimal:2',
         'discount_percentage' => 'decimal:2',

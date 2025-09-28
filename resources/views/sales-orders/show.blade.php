@@ -13,8 +13,13 @@
             <i class="fas fa-arrow-left me-1"></i> Back
         </a>
         @if(in_array($salesOrder->status, ['pending', 'confirmed']))
-            <a href="{{ route('sales-orders.edit', $salesOrder) }}" class="btn btn-primary">
+            <a href="{{ route('sales-orders.edit', $salesOrder) }}" class="btn btn-primary me-2">
                 <i class="fas fa-edit me-1"></i> Edit
+            </a>
+        @endif
+        @if(in_array($salesOrder->status, ['confirmed', 'processing', 'shipped', 'delivered']))
+            <a href="{{ route('invoices.create-from-sales-order', $salesOrder) }}" class="btn btn-success">
+                <i class="fas fa-file-invoice me-1"></i> Create Invoice
             </a>
         @endif
     </div>

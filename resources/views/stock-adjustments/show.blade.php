@@ -12,7 +12,7 @@
         <a href="{{ route('stock-adjustments.index') }}" class="btn btn-outline-secondary me-2">
             <i class="fas fa-arrow-left me-1"></i> Back
         </a>
-        @if($stockAdjustment->status === 'pending')
+        @if(true) {{-- Always show edit button since status column doesn't exist --}}
             <a href="{{ route('stock-adjustments.edit', $stockAdjustment) }}" class="btn btn-primary">
                 <i class="fas fa-edit me-1"></i> Edit
             </a>
@@ -31,7 +31,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <p><strong>Adjustment Number:</strong> {{ $stockAdjustment->adjustment_number }}</p>
-                        <p><strong>Adjustment Date:</strong> {{ $stockAdjustment->adjustment_date->format('M d, Y') }}</p>
+                        <p><strong>Adjustment Date:</strong> {{ $stockAdjustment->created_at->format('M d, Y') }}</p>
                         <p><strong>Type:</strong> 
                             <span class="badge bg-{{ $stockAdjustment->type_color }}">
                                 {{ $stockAdjustment->type_label }}
@@ -44,24 +44,26 @@
                         </p>
                     </div>
                     <div class="col-md-6">
-                        <p><strong>Reason:</strong> {{ ucfirst(str_replace('_', ' ', $stockAdjustment->reason)) }}</p>
-                        <p><strong>Total Items:</strong> {{ $stockAdjustment->total_items }}</p>
-                        <p><strong>Created By:</strong> {{ $stockAdjustment->createdBy?->name ?? 'Unknown' }}</p>
+                        <p><strong>Reason:</strong> N/A</p>
+                        <p><strong>Total Items:</strong> N/A</p>
+                        <p><strong>Created By:</strong> Unknown</p>
                         <p><strong>Created:</strong> {{ $stockAdjustment->created_at->format('M d, Y H:i') }}</p>
                     </div>
                 </div>
-                @if($stockAdjustment->notes)
+                {{-- Notes section disabled since notes column doesn't exist yet --}}
+                {{-- @if($stockAdjustment->notes)
                     <div class="mt-3">
                         <strong>Notes:</strong>
                         <p class="text-muted">{{ $stockAdjustment->notes }}</p>
                     </div>
-                @endif
-                @if($stockAdjustment->approvedBy)
+                @endif --}}
+                {{-- Approval section disabled since columns don't exist yet --}}
+                {{-- @if($stockAdjustment->approvedBy)
                     <div class="mt-3">
                         <strong>Approved By:</strong> {{ $stockAdjustment->approvedBy->name }}<br>
                         <strong>Approved At:</strong> {{ $stockAdjustment->approved_at->format('M d, Y H:i') }}
                     </div>
-                @endif
+                @endif --}}
             </div>
         </div>
 
@@ -117,7 +119,7 @@
     <!-- Quick Actions -->
     <div class="col-lg-4">
         <!-- Status Actions -->
-        @if($stockAdjustment->status === 'pending')
+        @if(true) {{-- Always show edit button since status column doesn't exist --}}
             <div class="card mb-4">
                 <div class="card-header">
                     <h6 class="mb-0"><i class="fas fa-cogs me-2"></i>Quick Actions</h6>

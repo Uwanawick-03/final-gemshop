@@ -9,11 +9,21 @@ use App\Models\SalesOrder;
 use App\Models\Item;
 use App\Models\TransactionItem;
 use App\Models\Currency;
+use App\Services\CurrencyService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class InvoiceController extends Controller
 {
+    protected $currencyService;
+
+    public function __construct(CurrencyService $currencyService)
+    {
+        $this->currencyService = $currencyService;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -45,6 +55,11 @@ class InvoiceController extends Controller
             $query->where('customer_id', $request->customer_id);
         }
 
+        // Filter by payment method
+        if ($request->filled('payment_method')) {
+            $query->where('payment_method', $request->payment_method);
+        }
+
         // Filter by date range
         if ($request->filled('date_from')) {
             $query->where('invoice_date', '>=', $request->date_from);
@@ -69,8 +84,26 @@ class InvoiceController extends Controller
         // Get filter options
         $customers = Customer::where('is_active', true)->orderBy('first_name')->get();
         $statuses = ['draft', 'sent', 'paid', 'overdue', 'cancelled'];
+        $paymentMethods = ['cash', 'card', 'credit'];
 
-        return view('invoices.index', compact('invoices', 'customers', 'statuses'));
+        // Calculate totals
+        $totalInvoices = Invoice::count();
+        $totalAmount = Invoice::sum('total_amount');
+        $paidAmount = Invoice::where('status', 'paid')->sum('total_amount');
+        $overdueAmount = Invoice::where('status', 'overdue')->sum('total_amount');
+        $overdueCount = Invoice::where('status', 'overdue')->count();
+
+        return view('invoices.index', compact(
+            'invoices', 
+            'customers', 
+            'statuses', 
+            'paymentMethods',
+            'totalInvoices',
+            'totalAmount',
+            'paidAmount',
+            'overdueAmount',
+            'overdueCount'
+        ));
     }
 
     /**
@@ -82,7 +115,7 @@ class InvoiceController extends Controller
         $salesAssistants = SalesAssistant::where('is_active', true)->orderBy('first_name')->get();
         $items = Item::where('is_active', true)->orderBy('name')->get();
         $currencies = Currency::where('is_active', true)->get();
-        $salesOrders = SalesOrder::where('status', 'approved')->get();
+        $salesOrders = SalesOrder::whereIn('status', ['confirmed', 'processing', 'shipped', 'delivered'])->get();
 
         // If coming from a sales order
         $salesOrder = null;
@@ -91,7 +124,38 @@ class InvoiceController extends Controller
                 ->findOrFail($request->sales_order_id);
         }
 
-        return view('invoices.create', compact('customers', 'salesAssistants', 'items', 'currencies', 'salesOrders', 'salesOrder'));
+        return view('invoices.create', compact(
+            'customers', 
+            'salesAssistants', 
+            'items', 
+            'currencies', 
+            'salesOrders', 
+            'salesOrder'
+        ));
+    }
+
+    /**
+     * Create invoice from a specific sales order
+     */
+    public function createFromSalesOrder(SalesOrder $salesOrder)
+    {
+        $customers = Customer::where('is_active', true)->orderBy('first_name')->get();
+        $salesAssistants = SalesAssistant::where('is_active', true)->orderBy('first_name')->get();
+        $items = Item::where('is_active', true)->orderBy('name')->get();
+        $currencies = Currency::where('is_active', true)->get();
+        $salesOrders = SalesOrder::whereIn('status', ['confirmed', 'processing', 'shipped', 'delivered'])->get();
+
+        // Load the specific sales order with its data
+        $salesOrder->load(['customer', 'transactionItems.item']);
+
+        return view('invoices.create', compact(
+            'customers', 
+            'salesAssistants', 
+            'items', 
+            'currencies', 
+            'salesOrders', 
+            'salesOrder'
+        ));
     }
 
     /**
@@ -108,10 +172,10 @@ class InvoiceController extends Controller
             'currency_id' => 'required|exists:currencies,id',
             'exchange_rate' => 'nullable|numeric|min:0',
             'payment_terms' => 'nullable|string|max:255',
-            'payment_method' => 'nullable|string|max:255',
+            'payment_method' => 'nullable|in:cash,card,credit',
             'items' => 'required|array|min:1',
             'items.*.item_id' => 'required|exists:items,id',
-            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.quantity' => 'required|numeric|min:0.01',
             'items.*.unit_price' => 'required|numeric|min:0',
             'notes' => 'nullable|string',
             'terms_conditions' => 'nullable|string'
@@ -123,6 +187,13 @@ class InvoiceController extends Controller
             // Generate invoice number
             $invoiceNumber = 'INV-' . date('Y') . '-' . str_pad(Invoice::whereYear('created_at', date('Y'))->count() + 1, 4, '0', STR_PAD_LEFT);
 
+            // Get exchange rate if not provided
+            $exchangeRate = $request->exchange_rate;
+            if (!$exchangeRate) {
+                $currency = Currency::findOrFail($request->currency_id);
+                $exchangeRate = $currency->exchange_rate;
+            }
+
             // Create invoice
             $invoice = Invoice::create([
                 'customer_id' => $request->customer_id,
@@ -132,13 +203,13 @@ class InvoiceController extends Controller
                 'invoice_date' => $request->invoice_date,
                 'due_date' => $request->due_date,
                 'currency_id' => $request->currency_id,
-                'exchange_rate' => $request->exchange_rate ?? 1.0000,
+                'exchange_rate' => $exchangeRate,
                 'payment_terms' => $request->payment_terms,
                 'payment_method' => $request->payment_method,
                 'status' => 'draft',
                 'notes' => $request->notes,
                 'terms_conditions' => $request->terms_conditions,
-                'created_by' => auth()->id()
+                'created_by' => Auth::id()
             ]);
 
             $subtotal = 0;
@@ -187,7 +258,7 @@ class InvoiceController extends Controller
 
             DB::commit();
 
-            return redirect()->route('invoices.show', $invoice)
+            return redirect()->route('invoices.index')
                            ->with('success', 'Invoice created successfully!');
 
         } catch (\Exception $e) {
@@ -202,7 +273,7 @@ class InvoiceController extends Controller
      */
     public function show(Invoice $invoice)
     {
-        $invoice->load(['customer', 'salesAssistant', 'transactionItems.item']);
+        $invoice->load(['customer', 'salesAssistant', 'currency', 'transactionItems.item', 'createdBy']);
 
         return view('invoices.show', compact('invoice'));
     }
@@ -220,10 +291,11 @@ class InvoiceController extends Controller
         $customers = Customer::where('is_active', true)->orderBy('first_name')->get();
         $salesAssistants = SalesAssistant::where('is_active', true)->orderBy('first_name')->get();
         $items = Item::where('is_active', true)->orderBy('name')->get();
+        $currencies = Currency::where('is_active', true)->get();
 
         $invoice->load('transactionItems.item');
 
-        return view('invoices.edit', compact('invoice', 'customers', 'salesAssistants', 'items'));
+        return view('invoices.edit', compact('invoice', 'customers', 'salesAssistants', 'items', 'currencies'));
     }
 
     /**
@@ -240,9 +312,12 @@ class InvoiceController extends Controller
             'customer_id' => 'required|exists:customers,id',
             'sales_assistant_id' => 'required|exists:sales_assistants,id',
             'invoice_date' => 'required|date',
+            'due_date' => 'required|date|after_or_equal:invoice_date',
+            'currency_id' => 'required|exists:currencies,id',
+            'payment_method' => 'nullable|in:cash,card,credit',
             'items' => 'required|array|min:1',
             'items.*.item_id' => 'required|exists:items,id',
-            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.quantity' => 'required|numeric|min:0.01',
             'items.*.unit_price' => 'required|numeric|min:0',
             'notes' => 'nullable|string'
         ]);
@@ -263,6 +338,9 @@ class InvoiceController extends Controller
                 'customer_id' => $request->customer_id,
                 'sales_assistant_id' => $request->sales_assistant_id,
                 'invoice_date' => $request->invoice_date,
+                'due_date' => $request->due_date,
+                'currency_id' => $request->currency_id,
+                'payment_method' => $request->payment_method,
                 'notes' => $request->notes
             ]);
 
@@ -392,7 +470,7 @@ class InvoiceController extends Controller
     {
         $invoice->load(['customer', 'salesAssistant', 'currency', 'transactionItems.item', 'createdBy']);
         
-        $pdf = \PDF::loadView('invoices.pdf', compact('invoice'));
+        $pdf = Pdf::loadView('invoices.pdf', compact('invoice'));
         $filename = 'Invoice-' . $invoice->invoice_number . '-' . date('Y-m-d') . '.pdf';
         
         return $pdf->download($filename);
@@ -486,7 +564,7 @@ class InvoiceController extends Controller
                 'status' => 'draft',
                 'notes' => $invoice->notes,
                 'terms_conditions' => $invoice->terms_conditions,
-                'created_by' => auth()->id()
+                'created_by' => Auth::id()
             ]);
             
             // Copy transaction items

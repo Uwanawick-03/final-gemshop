@@ -78,6 +78,28 @@ class CurrencyService
     }
 
     /**
+     * Convert amount between any two currencies
+     */
+    public function convertAmount($amount, $fromCurrencyCode, $toCurrencyCode)
+    {
+        if ($fromCurrencyCode === $toCurrencyCode) {
+            return $amount;
+        }
+
+        $fromCurrency = Currency::where('code', $fromCurrencyCode)->first();
+        $toCurrency = Currency::where('code', $toCurrencyCode)->first();
+
+        if (!$fromCurrency || !$toCurrency) {
+            return $amount;
+        }
+
+        // Convert to LKR first, then to target currency
+        // Exchange rates are stored as "1 unit of currency = X LKR"
+        $lkrAmount = $amount * $fromCurrency->exchange_rate;
+        return round($lkrAmount / $toCurrency->exchange_rate, 2);
+    }
+
+    /**
      * Update exchange rates (for future API integration)
      */
     public function updateExchangeRates($rates)

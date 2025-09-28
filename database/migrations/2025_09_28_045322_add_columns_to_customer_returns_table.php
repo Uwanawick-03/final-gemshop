@@ -11,8 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('customer_returns', function (Blueprint $table) {
-            $table->id();
+        Schema::table('customer_returns', function (Blueprint $table) {
             $table->foreignId('customer_id')->constrained()->onDelete('cascade');
             $table->string('return_number')->unique();
             $table->date('return_date');
@@ -23,7 +22,6 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
-            $table->timestamps();
         });
     }
 
@@ -32,6 +30,23 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('customer_returns');
+        Schema::table('customer_returns', function (Blueprint $table) {
+            $table->dropForeign(['customer_id']);
+            $table->dropForeign(['currency_id']);
+            $table->dropForeign(['created_by']);
+            $table->dropForeign(['updated_by']);
+            $table->dropColumn([
+                'customer_id',
+                'return_number',
+                'return_date',
+                'currency_id',
+                'total_amount',
+                'status',
+                'reason',
+                'notes',
+                'created_by',
+                'updated_by'
+            ]);
+        });
     }
 };

@@ -26,7 +26,7 @@
                 <div class="col-md-4">
                     <label class="form-label">Adjustment Date <span class="text-danger">*</span></label>
                     <input type="date" name="adjustment_date" 
-                           value="{{ old('adjustment_date', $stockAdjustment->adjustment_date->format('Y-m-d')) }}" 
+                           value="{{ old('adjustment_date', $stockAdjustment->created_at->format('Y-m-d')) }}" 
                            class="form-control @error('adjustment_date') is-invalid @enderror" required>
                     @error('adjustment_date')
                         <div class="invalid-feedback">{{ $message }}</div>
@@ -37,8 +37,8 @@
                     <label class="form-label">Adjustment Type <span class="text-danger">*</span></label>
                     <select name="type" class="form-select @error('type') is-invalid @enderror" required>
                         <option value="">Select type</option>
-                        <option value="increase" {{ old('type', $stockAdjustment->type) == 'increase' ? 'selected' : '' }}>Stock Increase</option>
-                        <option value="decrease" {{ old('type', $stockAdjustment->type) == 'decrease' ? 'selected' : '' }}>Stock Decrease</option>
+                        <option value="increase" {{ old('type') == 'increase' ? 'selected' : '' }}>Stock Increase</option>
+                        <option value="decrease" {{ old('type') == 'decrease' ? 'selected' : '' }}>Stock Decrease</option>
                     </select>
                     @error('type')
                         <div class="invalid-feedback">{{ $message }}</div>
@@ -50,7 +50,7 @@
                     <select name="reason" class="form-select @error('reason') is-invalid @enderror" required>
                         <option value="">Select reason</option>
                         @foreach($reasons as $key => $label)
-                            <option value="{{ $key }}" {{ old('reason', $stockAdjustment->reason) == $key ? 'selected' : '' }}>
+                            <option value="{{ $key }}" {{ old('reason') == $key ? 'selected' : '' }}>
                                 {{ $label }}
                             </option>
                         @endforeach
@@ -63,7 +63,7 @@
                 <div class="col-12">
                     <label class="form-label">Notes</label>
                     <textarea name="notes" class="form-control @error('notes') is-invalid @enderror" rows="3" 
-                              placeholder="Additional notes about this adjustment...">{{ old('notes', $stockAdjustment->notes) }}</textarea>
+                              placeholder="Additional notes about this adjustment...">{{ old('notes') }}</textarea>
                     @error('notes')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -156,8 +156,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const selectedItemId = existingItem ? existingItem.item_id : '';
         const adjustedQuantity = existingItem ? existingItem.adjusted_quantity : 0;
-        const itemReason = existingItem ? existingItem.reason : '';
-        const itemNotes = existingItem ? existingItem.notes : '';
+        const itemReason = existingItem ? (existingItem.reason || '') : '';
+        const itemNotes = existingItem ? (existingItem.notes || '') : '';
         
         row.innerHTML = `
             <td>

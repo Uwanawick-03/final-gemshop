@@ -108,6 +108,26 @@ class Invoice extends Model
         return ucfirst(str_replace('_', ' ', $this->status));
     }
 
+    public function getPaymentMethodLabelAttribute()
+    {
+        return match($this->payment_method) {
+            'cash' => 'Cash',
+            'card' => 'Card',
+            'credit' => 'Credit',
+            default => ucfirst($this->payment_method ?? 'Not specified')
+        };
+    }
+
+    public function getPaymentMethodColorAttribute()
+    {
+        return match($this->payment_method) {
+            'cash' => 'success',
+            'card' => 'info',
+            'credit' => 'warning',
+            default => 'secondary'
+        };
+    }
+
     public function getIsOverdueAttribute()
     {
         return $this->due_date && $this->due_date < now() && $this->status !== 'paid';

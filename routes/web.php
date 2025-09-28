@@ -16,6 +16,7 @@ use App\Http\Controllers\TourGuideController;
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\CalculatorController;
+use App\Http\Controllers\CustomerReturnController;
 
 // Authentication Routes
 Auth::routes();
@@ -91,14 +92,31 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/grns/bulk-status-update', [GrnController::class, 'bulkStatusUpdate'])->name('grns.bulk-status-update');
     Route::get('/grns/get-by-po', [GrnController::class, 'getGrnByPo'])->name('grns.get-by-po');
     
-    Route::resource('invoices', \App\Http\Controllers\InvoiceController::class);
-    Route::post('/invoices/{invoice}/update-status', [\App\Http\Controllers\InvoiceController::class, 'updateStatus'])->name('invoices.update-status');
-    Route::get('/invoices/{invoice}/export-pdf', [\App\Http\Controllers\InvoiceController::class, 'exportPdf'])->name('invoices.export-pdf');
-    Route::post('/invoices/bulk-status-update', [\App\Http\Controllers\InvoiceController::class, 'bulkStatusUpdate'])->name('invoices.bulk-status-update');
-    Route::get('/invoices/get-by-sales-order', [\App\Http\Controllers\InvoiceController::class, 'getInvoiceBySalesOrder'])->name('invoices.get-by-sales-order');
-    Route::post('/invoices/{invoice}/send-email', [\App\Http\Controllers\InvoiceController::class, 'sendEmail'])->name('invoices.send-email');
-    Route::post('/invoices/{invoice}/duplicate', [\App\Http\Controllers\InvoiceController::class, 'duplicate'])->name('invoices.duplicate');
-    Route::get('/invoices/dashboard/stats', [\App\Http\Controllers\InvoiceController::class, 'getDashboardStats'])->name('invoices.dashboard-stats');
+// Invoice routes - specific routes must come before resource routes
+Route::get('/invoices/get-by-sales-order', [\App\Http\Controllers\InvoiceController::class, 'getInvoiceBySalesOrder'])->name('invoices.get-by-sales-order');
+Route::get('/invoices/create-from-sales-order/{salesOrder}', [\App\Http\Controllers\InvoiceController::class, 'createFromSalesOrder'])->name('invoices.create-from-sales-order');
+Route::get('/invoices/dashboard/stats', [\App\Http\Controllers\InvoiceController::class, 'getDashboardStats'])->name('invoices.dashboard-stats');
+Route::post('/invoices/bulk-status-update', [\App\Http\Controllers\InvoiceController::class, 'bulkStatusUpdate'])->name('invoices.bulk-status-update');
+
+// Invoice resource routes
+Route::resource('invoices', \App\Http\Controllers\InvoiceController::class);
+
+// Additional invoice routes
+Route::post('/invoices/{invoice}/update-status', [\App\Http\Controllers\InvoiceController::class, 'updateStatus'])->name('invoices.update-status');
+Route::get('/invoices/{invoice}/export-pdf', [\App\Http\Controllers\InvoiceController::class, 'exportPdf'])->name('invoices.export-pdf');
+Route::post('/invoices/{invoice}/send-email', [\App\Http\Controllers\InvoiceController::class, 'sendEmail'])->name('invoices.send-email');
+Route::post('/invoices/{invoice}/duplicate', [\App\Http\Controllers\InvoiceController::class, 'duplicate'])->name('invoices.duplicate');
+
+// Supplier Return routes - specific routes must come before resource routes
+Route::get('/supplier-returns/exchange-rates', [\App\Http\Controllers\SupplierReturnController::class, 'getExchangeRates'])->name('supplier-returns.exchange-rates');
+Route::post('/supplier-returns/bulk-status-update', [\App\Http\Controllers\SupplierReturnController::class, 'bulkStatusUpdate'])->name('supplier-returns.bulk-status-update');
+
+// Supplier Return resource routes
+Route::resource('supplier-returns', \App\Http\Controllers\SupplierReturnController::class);
+
+// Additional supplier return routes
+Route::post('/supplier-returns/{supplierReturn}/update-status', [\App\Http\Controllers\SupplierReturnController::class, 'updateStatus'])->name('supplier-returns.update-status');
+Route::get('/supplier-returns/{supplierReturn}/export-pdf', [\App\Http\Controllers\SupplierReturnController::class, 'exportPdf'])->name('supplier-returns.export-pdf');
     
     Route::resource('sales-orders', \App\Http\Controllers\SalesOrderController::class);
     Route::post('/sales-orders/{salesOrder}/update-status', [\App\Http\Controllers\SalesOrderController::class, 'updateStatus'])->name('sales-orders.update-status');
@@ -108,21 +126,37 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/stock-adjustments/{stockAdjustment}/approve', [\App\Http\Controllers\StockAdjustmentController::class, 'approve'])->name('stock-adjustments.approve');
     Route::post('/stock-adjustments/{stockAdjustment}/reject', [\App\Http\Controllers\StockAdjustmentController::class, 'reject'])->name('stock-adjustments.reject');
     
-    Route::get('/customer-returns', function () {
-        return view('customer-returns.index');
-    })->name('customer-returns.index');
+    // Customer Returns
+    Route::resource('customer-returns', \App\Http\Controllers\CustomerReturnController::class);
+    Route::post('/customer-returns/{customerReturn}/update-status', [\App\Http\Controllers\CustomerReturnController::class, 'updateStatus'])->name('customer-returns.update-status');
+    Route::get('/customer-returns/{customerReturn}/export-pdf', [\App\Http\Controllers\CustomerReturnController::class, 'exportPdf'])->name('customer-returns.export-pdf');
+    Route::get('/customer-returns/{customer}/items', [\App\Http\Controllers\CustomerReturnController::class, 'getCustomerItems'])->name('customer-returns.customer-items');
+    Route::get('/customer-returns/exchange-rates', [\App\Http\Controllers\CustomerReturnController::class, 'getExchangeRates'])->name('customer-returns.exchange-rates');
     
-    Route::get('/supplier-returns', function () {
-        return view('supplier-returns.index');
-    })->name('supplier-returns.index');
     
-    Route::get('/item-transfers', function () {
-        return view('item-transfers.index');
-    })->name('item-transfers.index');
+    // Item Transfer routes - specific routes must come before resource routes
+    Route::get('/item-transfers/get-item-stock', [\App\Http\Controllers\ItemTransferController::class, 'getItemStock'])->name('item-transfers.get-item-stock');
+    Route::post('/item-transfers/bulk-status-update', [\App\Http\Controllers\ItemTransferController::class, 'bulkStatusUpdate'])->name('item-transfers.bulk-status-update');
+
+    // Item Transfer resource routes
+    Route::resource('item-transfers', \App\Http\Controllers\ItemTransferController::class);
+
+    // Additional item transfer routes
+    Route::post('/item-transfers/{itemTransfer}/update-status', [\App\Http\Controllers\ItemTransferController::class, 'updateStatus'])->name('item-transfers.update-status');
+    Route::get('/item-transfers/{itemTransfer}/export-pdf', [\App\Http\Controllers\ItemTransferController::class, 'exportPdf'])->name('item-transfers.export-pdf');
+    Route::get('/item-transfers-debug', function() { return view('item-transfers.debug'); })->name('item-transfers.debug');
     
-    Route::get('/alteration-commissions', function () {
-        return view('alteration-commissions.index');
-    })->name('alteration-commissions.index');
+    // Alteration Commission routes - specific routes must come before resource routes
+    Route::get('/alteration-commissions/exchange-rates', [\App\Http\Controllers\AlterationCommissionController::class, 'getExchangeRates'])->name('alteration-commissions.exchange-rates');
+    Route::post('/alteration-commissions/bulk-status-update', [\App\Http\Controllers\AlterationCommissionController::class, 'bulkStatusUpdate'])->name('alteration-commissions.bulk-status-update');
+
+    // Alteration Commission resource routes
+    Route::resource('alteration-commissions', \App\Http\Controllers\AlterationCommissionController::class);
+
+    // Additional alteration commission routes
+    Route::post('/alteration-commissions/{alterationCommission}/update-status', [\App\Http\Controllers\AlterationCommissionController::class, 'updateStatus'])->name('alteration-commissions.update-status');
+    Route::post('/alteration-commissions/{alterationCommission}/update-payment', [\App\Http\Controllers\AlterationCommissionController::class, 'updatePayment'])->name('alteration-commissions.update-payment');
+    Route::get('/alteration-commissions/{alterationCommission}/export-pdf', [\App\Http\Controllers\AlterationCommissionController::class, 'exportPdf'])->name('alteration-commissions.export-pdf');
     
     // Workshop Routes
     Route::get('/job-issues', function () {

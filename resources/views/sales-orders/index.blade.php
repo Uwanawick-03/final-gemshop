@@ -268,6 +268,12 @@
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                         @endif
+                                        @if(in_array($salesOrder->status, ['confirmed', 'processing', 'shipped', 'delivered']))
+                                            <a href="{{ route('invoices.create-from-sales-order', $salesOrder) }}" 
+                                               class="btn btn-outline-success" title="Create Invoice">
+                                                <i class="fas fa-file-invoice"></i>
+                                            </a>
+                                        @endif
                                         @if(in_array($salesOrder->status, ['pending', 'confirmed', 'processing']))
                                             <form action="{{ route('sales-orders.destroy', $salesOrder) }}" 
                                                   method="POST" style="display: inline;"

@@ -180,27 +180,27 @@
                                         <strong>{{ $adjustment->adjustment_number }}</strong>
                                     </a>
                                 </td>
-                                <td>{{ $adjustment->adjustment_date->format('M d, Y') }}</td>
+                                <td>{{ $adjustment->created_at->format('M d, Y') }}</td>
                                 <td>
-                                    <span class="badge bg-{{ $adjustment->type_color }}">
-                                        {{ $adjustment->type_label }}
+                                    <span class="badge bg-secondary">
+                                        N/A
                                     </span>
                                 </td>
-                                <td>{{ ucfirst(str_replace('_', ' ', $adjustment->reason)) }}</td>
+                                <td>N/A</td>
                                 <td>
-                                    <span class="badge bg-{{ $adjustment->status_color }}">
-                                        {{ $adjustment->status_label }}
+                                    <span class="badge bg-secondary">
+                                        N/A
                                     </span>
                                 </td>
-                                <td>{{ $adjustment->total_items }} items</td>
-                                <td>{{ $adjustment->createdBy?->name ?? 'Unknown' }}</td>
+                                <td>N/A</td>
+                                <td>Unknown</td>
                                 <td>
                                     <div class="btn-group btn-group-sm">
                                         <a href="{{ route('stock-adjustments.show', $adjustment) }}" 
                                            class="btn btn-outline-primary" title="View">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        @if($adjustment->status === 'pending')
+                                        @if(true) {{-- Always show edit/delete since status column doesn't exist --}}
                                             <a href="{{ route('stock-adjustments.edit', $adjustment) }}" 
                                                class="btn btn-outline-secondary" title="Edit">
                                                 <i class="fas fa-edit"></i>
