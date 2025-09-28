@@ -13,6 +13,17 @@ return new class extends Migration
     {
         Schema::create('workshop_adjustments', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('item_id')->constrained()->onDelete('cascade');
+            $table->string('workshop_location');
+            $table->enum('adjustment_type', ['material_used', 'scrap', 'defective', 'correction']);
+            $table->integer('quantity');
+            $table->date('adjustment_date');
+            $table->string('reference_number')->unique();
+            $table->text('reason');
+            $table->foreignId('craftsman_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('approved_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }

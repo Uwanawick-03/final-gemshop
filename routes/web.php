@@ -36,9 +36,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/home', [DashboardController::class, 'index'])->name('home');
     
     // System Routes
-    Route::get('/about', function () {
-        return view('about');
-    })->name('about');
+    Route::get('/about', [\App\Http\Controllers\AboutController::class, 'index'])->name('about');
+    Route::get('/about/system-info', [\App\Http\Controllers\AboutController::class, 'systemInfo'])->name('about.system-info');
     
     // Calculator Routes
     Route::get('/calculator', [CalculatorController::class, 'index'])->name('calculator');
@@ -158,47 +157,131 @@ Route::get('/supplier-returns/{supplierReturn}/export-pdf', [\App\Http\Controlle
     Route::post('/alteration-commissions/{alterationCommission}/update-payment', [\App\Http\Controllers\AlterationCommissionController::class, 'updatePayment'])->name('alteration-commissions.update-payment');
     Route::get('/alteration-commissions/{alterationCommission}/export-pdf', [\App\Http\Controllers\AlterationCommissionController::class, 'exportPdf'])->name('alteration-commissions.export-pdf');
     
-    // Workshop Routes
-    Route::get('/job-issues', function () {
-        return view('job-issues.index');
-    })->name('job-issues.index');
+    // Job Issues Routes - specific routes must come before resource routes
+    Route::get('/job-issues/get-by-status/{status}', [\App\Http\Controllers\JobIssueController::class, 'getByStatus'])->name('job-issues.get-by-status');
+    Route::post('/job-issues/bulk-status-update', [\App\Http\Controllers\JobIssueController::class, 'bulkStatusUpdate'])->name('job-issues.bulk-status-update');
+
+    // Job Issues resource routes
+    Route::resource('job-issues', \App\Http\Controllers\JobIssueController::class);
+
+    // Additional job issues routes
+    Route::post('/job-issues/{jobIssue}/update-status', [\App\Http\Controllers\JobIssueController::class, 'updateStatus'])->name('job-issues.update-status');
+    Route::get('/job-issues/{jobIssue}/export-pdf', [\App\Http\Controllers\JobIssueController::class, 'exportPdf'])->name('job-issues.export-pdf');
     
-    Route::get('/finished-good-transfers', function () {
-        return view('finished-good-transfers.index');
-    })->name('finished-good-transfers.index');
+    // Finished Good Transfers Routes - specific routes must come before resource routes
+    Route::get('/finished-good-transfers/get-by-status/{status}', [\App\Http\Controllers\FinishedGoodTransferController::class, 'getByStatus'])->name('finished-good-transfers.get-by-status');
+    Route::post('/finished-good-transfers/bulk-status-update', [\App\Http\Controllers\FinishedGoodTransferController::class, 'bulkStatusUpdate'])->name('finished-good-transfers.bulk-status-update');
+
+    // Finished Good Transfers resource routes
+    Route::resource('finished-good-transfers', \App\Http\Controllers\FinishedGoodTransferController::class);
+
+    // Additional finished good transfers routes
+    Route::post('/finished-good-transfers/{finishedGoodTransfer}/update-status', [\App\Http\Controllers\FinishedGoodTransferController::class, 'updateStatus'])->name('finished-good-transfers.update-status');
+    Route::post('/finished-good-transfers/{finishedGoodTransfer}/quality-check', [\App\Http\Controllers\FinishedGoodTransferController::class, 'qualityCheck'])->name('finished-good-transfers.quality-check');
+    Route::post('/finished-good-transfers/{finishedGoodTransfer}/complete-transfer', [\App\Http\Controllers\FinishedGoodTransferController::class, 'completeTransfer'])->name('finished-good-transfers.complete-transfer');
+    Route::get('/finished-good-transfers/{finishedGoodTransfer}/export-pdf', [\App\Http\Controllers\FinishedGoodTransferController::class, 'exportPdf'])->name('finished-good-transfers.export-pdf');
     
-    Route::get('/workshop-adjustments', function () {
-        return view('workshop-adjustments.index');
-    })->name('workshop-adjustments.index');
+    // Workshop Adjustments Routes - specific routes must come before resource routes
+    Route::get('/workshop-adjustments/get-by-status/{status}', [\App\Http\Controllers\WorkshopAdjustmentController::class, 'getByStatus'])->name('workshop-adjustments.get-by-status');
+    Route::post('/workshop-adjustments/bulk-status-update', [\App\Http\Controllers\WorkshopAdjustmentController::class, 'bulkStatusUpdate'])->name('workshop-adjustments.bulk-status-update');
+
+    // Workshop Adjustments resource routes
+    Route::resource('workshop-adjustments', \App\Http\Controllers\WorkshopAdjustmentController::class);
+
+    // Additional workshop adjustments routes
+    Route::post('/workshop-adjustments/{workshopAdjustment}/approve', [\App\Http\Controllers\WorkshopAdjustmentController::class, 'approve'])->name('workshop-adjustments.approve');
+    Route::post('/workshop-adjustments/{workshopAdjustment}/reject', [\App\Http\Controllers\WorkshopAdjustmentController::class, 'reject'])->name('workshop-adjustments.reject');
+    Route::get('/workshop-adjustments/{workshopAdjustment}/export-pdf', [\App\Http\Controllers\WorkshopAdjustmentController::class, 'exportPdf'])->name('workshop-adjustments.export-pdf');
     
-    Route::get('/craftsman-returns', function () {
-        return view('craftsman-returns.index');
-    })->name('craftsman-returns.index');
+    // Craftsman Returns Routes - specific routes must come before resource routes
+    Route::get('/craftsman-returns/get-by-status/{status}', [\App\Http\Controllers\CraftsmanReturnController::class, 'getByStatus'])->name('craftsman-returns.get-by-status');
+    Route::get('/craftsman-returns/get-by-craftsman/{craftsmanId}', [\App\Http\Controllers\CraftsmanReturnController::class, 'getByCraftsman'])->name('craftsman-returns.get-by-craftsman');
+    Route::post('/craftsman-returns/bulk-status-update', [\App\Http\Controllers\CraftsmanReturnController::class, 'bulkStatusUpdate'])->name('craftsman-returns.bulk-status-update');
+
+    // Craftsman Returns resource routes
+    Route::resource('craftsman-returns', \App\Http\Controllers\CraftsmanReturnController::class);
+
+    // Additional craftsman returns routes
+    Route::post('/craftsman-returns/{craftsmanReturn}/approve', [\App\Http\Controllers\CraftsmanReturnController::class, 'approve'])->name('craftsman-returns.approve');
+    Route::post('/craftsman-returns/{craftsmanReturn}/reject', [\App\Http\Controllers\CraftsmanReturnController::class, 'reject'])->name('craftsman-returns.reject');
+    Route::post('/craftsman-returns/{craftsmanReturn}/complete', [\App\Http\Controllers\CraftsmanReturnController::class, 'complete'])->name('craftsman-returns.complete');
+    Route::get('/craftsman-returns/{craftsmanReturn}/export-pdf', [\App\Http\Controllers\CraftsmanReturnController::class, 'exportPdf'])->name('craftsman-returns.export-pdf');
     
     Route::get('/mtcs', function () {
         return view('mtcs.index');
     })->name('mtcs.index');
     
     // Reports Routes
-    Route::get('/reports/stocks', function () {
-        return view('reports.stocks');
-    })->name('reports.stocks');
+    Route::prefix('reports')->name('reports.')->group(function () {
+        // Stocks Report Routes
+        Route::get('/stocks', [\App\Http\Controllers\StockReportController::class, 'index'])->name('stocks');
+        Route::get('/stocks/detailed', [\App\Http\Controllers\StockReportController::class, 'detailed'])->name('stocks.detailed');
+        Route::get('/stocks/movements', [\App\Http\Controllers\StockReportController::class, 'movements'])->name('stocks.movements');
+        Route::get('/stocks/valuation', [\App\Http\Controllers\StockReportController::class, 'valuation'])->name('stocks.valuation');
+        Route::get('/stocks/export-pdf', [\App\Http\Controllers\StockReportController::class, 'exportPdf'])->name('stocks.export-pdf');
+        Route::get('/stocks/export-excel', [\App\Http\Controllers\StockReportController::class, 'exportExcel'])->name('stocks.export-excel');
+        Route::get('/stocks/export-csv', [\App\Http\Controllers\StockReportController::class, 'exportCsv'])->name('stocks.export-csv');
+    });
     
-    Route::get('/reports/sales', function () {
-        return view('reports.sales');
-    })->name('reports.sales');
+    // Sales Report Routes
+    Route::prefix('reports')->name('reports.')->group(function () {
+        // Sales Report Routes
+        Route::get('/sales', [\App\Http\Controllers\SalesReportController::class, 'index'])->name('sales');
+        Route::get('/sales/detailed', [\App\Http\Controllers\SalesReportController::class, 'detailed'])->name('sales.detailed');
+        Route::get('/sales/analytics', [\App\Http\Controllers\SalesReportController::class, 'analytics'])->name('sales.analytics');
+        Route::get('/sales/customers', [\App\Http\Controllers\SalesReportController::class, 'customers'])->name('sales.customers');
+        Route::get('/sales/products', [\App\Http\Controllers\SalesReportController::class, 'products'])->name('sales.products');
+        Route::get('/sales/export-pdf', [\App\Http\Controllers\SalesReportController::class, 'exportPdf'])->name('sales.export-pdf');
+        Route::get('/sales/export-excel', [\App\Http\Controllers\SalesReportController::class, 'exportExcel'])->name('sales.export-excel');
+        Route::get('/sales/export-csv', [\App\Http\Controllers\SalesReportController::class, 'exportCsv'])->name('sales.export-csv');
+    });
     
-    Route::get('/reports/inventory', function () {
-        return view('reports.inventory');
-    })->name('reports.inventory');
+    // Inventory Report Routes
+    Route::prefix('reports')->name('reports.')->group(function () {
+        // Inventory Report Routes
+        Route::get('/inventory', [\App\Http\Controllers\InventoryReportController::class, 'index'])->name('inventory');
+        Route::get('/inventory/detailed', [\App\Http\Controllers\InventoryReportController::class, 'detailed'])->name('inventory.detailed');
+        Route::get('/inventory/movements', [\App\Http\Controllers\InventoryReportController::class, 'movements'])->name('inventory.movements');
+        Route::get('/inventory/valuation', [\App\Http\Controllers\InventoryReportController::class, 'valuation'])->name('inventory.valuation');
+        Route::get('/inventory/adjustments', [\App\Http\Controllers\InventoryReportController::class, 'adjustments'])->name('inventory.adjustments');
+        Route::get('/inventory/transfers', [\App\Http\Controllers\InventoryReportController::class, 'transfers'])->name('inventory.transfers');
+        Route::get('/inventory/export-pdf', [\App\Http\Controllers\InventoryReportController::class, 'exportPdf'])->name('inventory.export-pdf');
+        Route::get('/inventory/export-excel', [\App\Http\Controllers\InventoryReportController::class, 'exportExcel'])->name('inventory.export-excel');
+        Route::get('/inventory/export-csv', [\App\Http\Controllers\InventoryReportController::class, 'exportCsv'])->name('inventory.export-csv');
+    });
     
-    Route::get('/reports/workshop', function () {
-        return view('reports.workshop');
-    })->name('reports.workshop');
+    // Workshop Report Routes
+    Route::prefix('reports')->name('reports.')->group(function () {
+        // Workshop Report Routes
+        Route::get('/workshop', [\App\Http\Controllers\WorkshopReportController::class, 'index'])->name('workshop');
+        Route::get('/workshop/detailed', [\App\Http\Controllers\WorkshopReportController::class, 'detailed'])->name('workshop.detailed');
+        Route::get('/workshop/job-issues', [\App\Http\Controllers\WorkshopReportController::class, 'jobIssues'])->name('workshop.job-issues');
+        Route::get('/workshop/adjustments', [\App\Http\Controllers\WorkshopReportController::class, 'adjustments'])->name('workshop.adjustments');
+        Route::get('/workshop/transfers', [\App\Http\Controllers\WorkshopReportController::class, 'transfers'])->name('workshop.transfers');
+        Route::get('/workshop/returns', [\App\Http\Controllers\WorkshopReportController::class, 'returns'])->name('workshop.returns');
+        Route::get('/workshop/mtcs', [\App\Http\Controllers\WorkshopReportController::class, 'mtcs'])->name('workshop.mtcs');
+        Route::get('/workshop/export-pdf', [\App\Http\Controllers\WorkshopReportController::class, 'exportPdf'])->name('workshop.export-pdf');
+        Route::get('/workshop/export-excel', [\App\Http\Controllers\WorkshopReportController::class, 'exportExcel'])->name('workshop.export-excel');
+        Route::get('/workshop/export-csv', [\App\Http\Controllers\WorkshopReportController::class, 'exportCsv'])->name('workshop.export-csv');
+    });
     
-    Route::get('/reports/guide-listing', function () {
-        return view('reports.guide-listing');
-    })->name('reports.guide-listing');
+    // Guide Listing Report Routes
+    Route::prefix('reports')->name('reports.')->group(function () {
+        // Guide Listing Report Routes
+        Route::get('/guide-listing', [\App\Http\Controllers\GuideListingController::class, 'index'])->name('guide-listing');
+        Route::get('/guide-listing/detailed', [\App\Http\Controllers\GuideListingController::class, 'detailed'])->name('guide-listing.detailed');
+        Route::get('/guide-listing/performance', [\App\Http\Controllers\GuideListingController::class, 'performance'])->name('guide-listing.performance');
+        Route::get('/guide-listing/compliance', [\App\Http\Controllers\GuideListingController::class, 'compliance'])->name('guide-listing.compliance');
+        Route::get('/guide-listing/export-pdf', [\App\Http\Controllers\GuideListingController::class, 'exportPdf'])->name('guide-listing.export-pdf');
+        Route::get('/guide-listing/export-excel', [\App\Http\Controllers\GuideListingController::class, 'exportExcel'])->name('guide-listing.export-excel');
+        Route::get('/guide-listing/export-csv', [\App\Http\Controllers\GuideListingController::class, 'exportCsv'])->name('guide-listing.export-csv');
+    });
+
+    // MTC Routes
+    Route::post('/mtcs/bulk-status-update', [\App\Http\Controllers\MtcController::class, 'bulkStatusUpdate'])->name('mtcs.bulk-status-update');
+    Route::resource('mtcs', \App\Http\Controllers\MtcController::class);
+    Route::post('/mtcs/{mtc}/update-status', [\App\Http\Controllers\MtcController::class, 'updateStatus'])->name('mtcs.update-status');
+    Route::get('/mtcs/{mtc}/export-pdf', [\App\Http\Controllers\MtcController::class, 'exportPdf'])->name('mtcs.export-pdf');
     
     // User Management Routes
     Route::resource('users', \App\Http\Controllers\UserController::class);

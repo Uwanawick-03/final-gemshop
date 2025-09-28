@@ -13,6 +13,17 @@ return new class extends Migration
     {
         Schema::create('craftsman_returns', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('craftsman_id')->constrained()->onDelete('cascade');
+            $table->foreignId('item_id')->constrained()->onDelete('cascade');
+            $table->string('return_number')->unique();
+            $table->date('return_date');
+            $table->enum('return_type', ['defective', 'unused_material', 'excess', 'quality_issue']);
+            $table->integer('quantity');
+            $table->text('reason');
+            $table->enum('status', ['pending', 'approved', 'completed', 'rejected'])->default('pending');
+            $table->foreignId('processed_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('approved_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }

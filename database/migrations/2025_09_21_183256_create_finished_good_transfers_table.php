@@ -13,6 +13,19 @@ return new class extends Migration
     {
         Schema::create('finished_good_transfers', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('item_id')->constrained()->onDelete('cascade');
+            $table->foreignId('craftsman_id')->nullable()->constrained()->onDelete('set null');
+            $table->string('from_workshop');
+            $table->string('to_location');
+            $table->integer('quantity');
+            $table->date('transfer_date');
+            $table->string('reference_number')->unique();
+            $table->boolean('quality_check_passed')->default(false);
+            $table->foreignId('quality_check_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->enum('status', ['pending', 'quality_check', 'completed', 'rejected'])->default('pending');
+            $table->foreignId('transferred_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('received_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }

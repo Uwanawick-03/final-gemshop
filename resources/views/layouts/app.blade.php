@@ -271,6 +271,9 @@
                         <a class="nav-link" href="{{ route('alteration-commissions.index') }}">
                             <i class="fas fa-cogs me-2"></i> Alteration Commission
                         </a>
+                        <a class="nav-link" href="{{ route('mtcs.index') }}">
+                            <i class="fas fa-certificate me-2"></i> MTC
+                        </a>
 
                         <!-- Workshop Menu -->
                         <div class="px-3 mb-3 mt-4">
