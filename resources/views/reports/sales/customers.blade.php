@@ -8,7 +8,7 @@
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('reports.sales') }}">Sales Report</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('reports.sales.index') }}">Sales Report</a></li>
                         <li class="breadcrumb-item active">Customer Report</li>
                     </ol>
                 </div>
@@ -143,10 +143,10 @@
                                         <span class="badge bg-primary fs-6">{{ $customer->total_invoices }}</span>
                                     </td>
                                     <td>
-                                        <strong class="text-success">${{ number_format($customer->total_sales, 2) }}</strong>
+                                        <strong class="text-success">Rs {{ number_format($customer->total_sales, 2) }}</strong>
                                     </td>
                                     <td>
-                                        <strong>${{ number_format($customer->total_invoices > 0 ? $customer->total_sales / $customer->total_invoices : 0, 2) }}</strong>
+                                        <strong>Rs {{ number_format($customer->total_invoices > 0 ? $customer->total_sales / $customer->total_invoices : 0, 2) }}</strong>
                                     </td>
                                     <td>
                                         @php
@@ -222,13 +222,13 @@
                         </div>
                         <div class="col-md-3">
                             <div class="text-center">
-                                <h4 class="text-success">${{ number_format($customers->sum('total_sales'), 2) }}</h4>
+                                <h4 class="text-success">Rs {{ number_format($customers->sum('total_sales'), 2) }}</h4>
                                 <p class="text-muted mb-0">Total Sales Value</p>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="text-center">
-                                <h4 class="text-info">${{ number_format($customers->avg('total_sales'), 2) }}</h4>
+                                <h4 class="text-info">Rs {{ number_format($customers->avg('total_sales'), 2) }}</h4>
                                 <p class="text-muted mb-0">Average Customer Value</p>
                             </div>
                         </div>

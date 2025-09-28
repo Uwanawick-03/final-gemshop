@@ -8,7 +8,7 @@
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('reports.sales') }}">Sales Report</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('reports.sales.index') }}">Sales Report</a></li>
                         <li class="breadcrumb-item active">Analytics</li>
                     </ol>
                 </div>
@@ -93,7 +93,7 @@
                     <div class="d-flex">
                         <div class="flex-1 overflow-hidden">
                             <p class="text-truncate font-size-14 mb-2">Total Sales</p>
-                            <h4 class="mb-0">${{ number_format($analytics['summary']['total_sales'], 2) }}</h4>
+                            <h4 class="mb-0">Rs {{ number_format($analytics['summary']['total_sales'], 2) }}</h4>
                         </div>
                         <div class="flex-shrink-0">
                             <div class="avatar-sm rounded-circle bg-success-subtle">
@@ -113,7 +113,7 @@
                     <div class="d-flex">
                         <div class="flex-1 overflow-hidden">
                             <p class="text-truncate font-size-14 mb-2">Average Sale</p>
-                            <h4 class="mb-0">${{ number_format($analytics['summary']['average_sale'], 2) }}</h4>
+                            <h4 class="mb-0">Rs {{ number_format($analytics['summary']['average_sale'], 2) }}</h4>
                         </div>
                         <div class="flex-shrink-0">
                             <div class="avatar-sm rounded-circle bg-info-subtle">
@@ -229,10 +229,10 @@
                                             <span class="badge bg-primary">{{ $data->invoices_count }}</span>
                                         </td>
                                         <td>
-                                            <strong>${{ number_format($data->total_sales, 2) }}</strong>
+                                            <strong>Rs {{ number_format($data->total_sales, 2) }}</strong>
                                         </td>
                                         <td>
-                                            ${{ number_format($data->average_sale, 2) }}
+                                            Rs {{ number_format($data->average_sale, 2) }}
                                         </td>
                                     </tr>
                                     @endforeach

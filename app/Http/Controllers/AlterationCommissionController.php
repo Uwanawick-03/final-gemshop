@@ -28,17 +28,17 @@ class AlterationCommissionController extends Controller
         $query = AlterationCommission::with(['customer', 'salesAssistant', 'craftsman', 'item', 'currency', 'createdBy']);
 
         // Apply filters
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
+        // if ($request->filled('status')) {
+        //     $query->where('status', $request->status);
+        // } // Column doesn't exist yet
 
-        if ($request->filled('payment_status')) {
-            $query->where('payment_status', $request->payment_status);
-        }
+        // if ($request->filled('payment_status')) {
+        //     $query->where('payment_status', $request->payment_status);
+        // } // Column doesn't exist yet
 
-        if ($request->filled('alteration_type')) {
-            $query->where('alteration_type', $request->alteration_type);
-        }
+        // if ($request->filled('alteration_type')) {
+        //     $query->where('alteration_type', $request->alteration_type);
+        // } // Column doesn't exist yet
 
         if ($request->filled('customer_id')) {
             $query->where('customer_id', $request->customer_id);
@@ -53,11 +53,11 @@ class AlterationCommissionController extends Controller
         }
 
         if ($request->filled('date_from')) {
-            $query->where('commission_date', '>=', $request->date_from);
+            $query->where('created_at', '>=', $request->date_from);
         }
 
         if ($request->filled('date_to')) {
-            $query->where('commission_date', '<=', $request->date_to);
+            $query->where('created_at', '<=', $request->date_to);
         }
 
         if ($request->filled('search')) {
@@ -79,7 +79,7 @@ class AlterationCommissionController extends Controller
         }
 
         // Sorting
-        $sortBy = $request->get('sort_by', 'commission_date');
+        $sortBy = $request->get('sort_by', 'created_at');
         $sortDirection = $request->get('sort_direction', 'desc');
         $query->orderBy($sortBy, $sortDirection);
 
@@ -90,24 +90,41 @@ class AlterationCommissionController extends Controller
         $salesAssistants = SalesAssistant::select('id', 'first_name', 'last_name')->orderBy('first_name')->get();
         $craftsmen = Craftsman::select('id', 'first_name', 'last_name')->orderBy('first_name')->get();
         $items = Item::select('id', 'name', 'item_code')->orderBy('name')->get();
-        $statuses = AlterationCommission::select('status')->distinct()->pluck('status');
-        $paymentStatuses = AlterationCommission::select('payment_status')->distinct()->pluck('payment_status');
-        $alterationTypes = AlterationCommission::select('alteration_type')->distinct()->pluck('alteration_type');
+        // $statuses = AlterationCommission::select('status')->distinct()->pluck('status'); // Column doesn't exist yet
+        // $paymentStatuses = AlterationCommission::select('payment_status')->distinct()->pluck('payment_status'); // Column doesn't exist yet
+        // $alterationTypes = AlterationCommission::select('alteration_type')->distinct()->pluck('alteration_type'); // Column doesn't exist yet
+        
+        // Provide default values for now
+        $statuses = collect(['pending', 'in_progress', 'completed', 'cancelled']);
+        $paymentStatuses = collect(['unpaid', 'partial', 'paid']);
+        $alterationTypes = collect(['resize', 'repair', 'polish', 'engrave', 'design_change', 'stone_setting', 'cleaning', 'other']);
 
         // Calculate statistics
         $totalCommissions = AlterationCommission::count();
-        $pendingCommissions = AlterationCommission::where('status', 'pending')->count();
-        $inProgressCommissions = AlterationCommission::where('status', 'in_progress')->count();
-        $completedCommissions = AlterationCommission::where('status', 'completed')->count();
-        $cancelledCommissions = AlterationCommission::where('status', 'cancelled')->count();
-        $overdueCommissions = AlterationCommission::where('status', 'in_progress')
-            ->where('start_date', '<', now()->subDays(7))
-            ->count();
+        // $pendingCommissions = AlterationCommission::where('status', 'pending')->count(); // Column doesn't exist yet
+        // $inProgressCommissions = AlterationCommission::where('status', 'in_progress')->count(); // Column doesn't exist yet
+        // $completedCommissions = AlterationCommission::where('status', 'completed')->count(); // Column doesn't exist yet
+        // $cancelledCommissions = AlterationCommission::where('status', 'cancelled')->count(); // Column doesn't exist yet
+        // $overdueCommissions = AlterationCommission::where('status', 'in_progress')
+        //     ->where('start_date', '<', now()->subDays(7))
+        //     ->count(); // Columns don't exist yet
+
+        // Provide default values for now
+        $pendingCommissions = 0;
+        $inProgressCommissions = 0;
+        $completedCommissions = 0;
+        $cancelledCommissions = 0;
+        $overdueCommissions = 0;
 
         // Calculate total commission amounts
-        $totalCommissionAmount = AlterationCommission::sum('commission_amount');
-        $paidAmount = AlterationCommission::sum('paid_amount');
-        $unpaidAmount = $totalCommissionAmount - $paidAmount;
+        // $totalCommissionAmount = AlterationCommission::sum('commission_amount'); // Column doesn't exist yet
+        // $paidAmount = AlterationCommission::sum('paid_amount'); // Column doesn't exist yet
+        // $unpaidAmount = $totalCommissionAmount - $paidAmount; // Columns don't exist yet
+        
+        // Provide default values for now
+        $totalCommissionAmount = 0;
+        $paidAmount = 0;
+        $unpaidAmount = 0;
 
         // Calculate total value in LKR (using all commissions, not just paginated ones)
         $allCommissions = AlterationCommission::with('currency')->get();
@@ -179,12 +196,12 @@ class AlterationCommissionController extends Controller
             'sales_assistant_id' => 'nullable|exists:sales_assistants,id',
             'craftsman_id' => 'nullable|exists:craftsmen,id',
             'item_id' => 'nullable|exists:items,id',
-            'commission_date' => 'required|date',
+            // 'commission_date' => 'required|date', // Column doesn't exist yet
             'alteration_type' => 'required|in:resize,repair,polish,engrave,design_change,stone_setting,cleaning,other',
             'description' => 'nullable|string|max:1000',
             'commission_amount' => 'required|numeric|min:0.01',
             'currency_id' => 'required|exists:currencies,id',
-            'start_date' => 'nullable|date|after_or_equal:commission_date',
+            'start_date' => 'nullable|date',
             'notes' => 'nullable|string|max:1000'
         ]);
 
@@ -203,7 +220,7 @@ class AlterationCommissionController extends Controller
                 'craftsman_id' => $request->craftsman_id,
                 'item_id' => $request->item_id,
                 'commission_number' => $commissionNumber,
-                'commission_date' => $request->commission_date,
+                // 'commission_date' => $request->commission_date, // Column doesn't exist yet
                 'alteration_type' => $request->alteration_type,
                 'description' => $request->description,
                 'commission_amount' => $request->commission_amount,
@@ -281,12 +298,12 @@ class AlterationCommissionController extends Controller
             'sales_assistant_id' => 'nullable|exists:sales_assistants,id',
             'craftsman_id' => 'nullable|exists:craftsmen,id',
             'item_id' => 'nullable|exists:items,id',
-            'commission_date' => 'required|date',
+            // 'commission_date' => 'required|date', // Column doesn't exist yet
             'alteration_type' => 'required|in:resize,repair,polish,engrave,design_change,stone_setting,cleaning,other',
             'description' => 'nullable|string|max:1000',
             'commission_amount' => 'required|numeric|min:0.01',
             'currency_id' => 'required|exists:currencies,id',
-            'start_date' => 'nullable|date|after_or_equal:commission_date',
+            'start_date' => 'nullable|date',
             'notes' => 'nullable|string|max:1000'
         ]);
 
@@ -301,7 +318,7 @@ class AlterationCommissionController extends Controller
                 'sales_assistant_id' => $request->sales_assistant_id,
                 'craftsman_id' => $request->craftsman_id,
                 'item_id' => $request->item_id,
-                'commission_date' => $request->commission_date,
+                // 'commission_date' => $request->commission_date, // Column doesn't exist yet
                 'alteration_type' => $request->alteration_type,
                 'description' => $request->description,
                 'commission_amount' => $request->commission_amount,

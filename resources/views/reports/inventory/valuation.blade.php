@@ -8,7 +8,7 @@
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('reports.inventory') }}">Inventory Report</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('reports.inventory.index') }}">Inventory Report</a></li>
                         <li class="breadcrumb-item active">Inventory Valuation</li>
                     </ol>
                 </div>
@@ -100,7 +100,7 @@
                     <div class="d-flex">
                         <div class="flex-1 overflow-hidden">
                             <p class="text-truncate font-size-14 mb-2">Total Value</p>
-                            <h4 class="mb-0">${{ number_format($totalValue, 2) }}</h4>
+                            <h4 class="mb-0">Rs {{ number_format($totalValue, 2) }}</h4>
                         </div>
                         <div class="flex-shrink-0">
                             <div class="avatar-sm rounded-circle bg-success-subtle">
@@ -120,7 +120,7 @@
                     <div class="d-flex">
                         <div class="flex-1 overflow-hidden">
                             <p class="text-truncate font-size-14 mb-2">Avg Value per Item</p>
-                            <h4 class="mb-0">${{ number_format($totalItems > 0 ? $totalValue / $totalItems : 0, 2) }}</h4>
+                            <h4 class="mb-0">Rs {{ number_format($totalItems > 0 ? $totalValue / $totalItems : 0, 2) }}</h4>
                         </div>
                         <div class="flex-shrink-0">
                             <div class="avatar-sm rounded-circle bg-warning-subtle">
@@ -213,13 +213,13 @@
                                         </span>
                                     </td>
                                     <td class="text-right">
-                                        <strong>${{ number_format($item->valuation_price, 2) }}</strong>
+                                        <strong>Rs {{ number_format($item->valuation_price, 2) }}</strong>
                                     </td>
                                     <td class="text-right">
-                                        <strong class="text-success">${{ number_format($item->total_value, 2) }}</strong>
+                                        <strong class="text-success">Rs {{ number_format($item->total_value, 2) }}</strong>
                                     </td>
-                                    <td class="text-right">${{ number_format($item->cost_price, 2) }}</td>
-                                    <td class="text-right">${{ number_format($item->selling_price, 2) }}</td>
+                                    <td class="text-right">Rs {{ number_format($item->cost_price, 2) }}</td>
+                                    <td class="text-right">Rs {{ number_format($item->selling_price, 2) }}</td>
                                     <td class="text-right">
                                         @php
                                             $profitMargin = $item->cost_price > 0 ? (($item->selling_price - $item->cost_price) / $item->selling_price) * 100 : 0;
@@ -286,9 +286,9 @@
                                         <td>{{ $data['count'] }}</td>
                                         <td>{{ number_format($data['total_stock']) }}</td>
                                         <td class="text-right">
-                                            <strong>${{ number_format($data['total_value'], 2) }}</strong>
+                                            <strong>Rs {{ number_format($data['total_value'], 2) }}</strong>
                                         </td>
-                                        <td class="text-right">${{ number_format($data['avg_value'], 2) }}</td>
+                                        <td class="text-right">Rs {{ number_format($data['avg_value'], 2) }}</td>
                                         <td class="text-right">
                                             {{ number_format(($data['total_value'] / $totalValue) * 100, 1) }}%
                                         </td>

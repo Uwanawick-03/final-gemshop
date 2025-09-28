@@ -14,7 +14,7 @@
         </div>
         <div>
             <div class="btn-group" role="group">
-                <a href="{{ route('reports.workshop') }}" class="btn btn-outline-secondary">
+                <a href="{{ route('reports.workshop.index') }}" class="btn btn-outline-secondary">
                     <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
                 </a>
                 <a href="{{ route('reports.workshop.export-pdf', ['type' => 'mtcs']) }}" class="btn btn-outline-danger">
@@ -204,13 +204,13 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="text-center">
-                                <h3 class="text-info">${{ number_format($mtcs->sum('purchase_price'), 2) }}</h3>
+                                <h3 class="text-info">Rs {{ number_format($mtcs->sum('purchase_price'), 2) }}</h3>
                                 <p class="text-muted mb-0">Total Purchase Value</p>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="text-center">
-                                <h3 class="text-success">${{ number_format($mtcs->sum('selling_price'), 2) }}</h3>
+                                <h3 class="text-success">Rs {{ number_format($mtcs->sum('selling_price'), 2) }}</h3>
                                 <p class="text-muted mb-0">Total Selling Value</p>
                             </div>
                         </div>
@@ -219,7 +219,7 @@
                                 @php
                                     $totalProfit = $mtcs->sum('selling_price') - $mtcs->sum('purchase_price');
                                 @endphp
-                                <h3 class="text-{{ $totalProfit >= 0 ? 'success' : 'danger' }}">${{ number_format($totalProfit, 2) }}</h3>
+                                <h3 class="text-{{ $totalProfit >= 0 ? 'success' : 'danger' }}">Rs {{ number_format($totalProfit, 2) }}</h3>
                                 <p class="text-muted mb-0">Total Profit/Loss</p>
                             </div>
                         </div>
@@ -288,14 +288,14 @@
                                     <span class="badge bg-secondary">N/A</span>
                                 @endif
                             </td>
-                            <td>${{ number_format($mtc->purchase_price, 2) }}</td>
-                            <td>${{ number_format($mtc->selling_price, 2) }}</td>
+                            <td>Rs {{ number_format($mtc->purchase_price, 2) }}</td>
+                            <td>Rs {{ number_format($mtc->selling_price, 2) }}</td>
                             <td>
                                 @php
                                     $profit = $mtc->selling_price - $mtc->purchase_price;
                                 @endphp
                                 <span class="badge bg-{{ $profit >= 0 ? 'success' : 'danger' }}">
-                                    ${{ number_format($profit, 2) }}
+                                    Rs {{ number_format($profit, 2) }}
                                 </span>
                             </td>
                             <td>

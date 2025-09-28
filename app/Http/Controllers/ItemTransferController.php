@@ -14,7 +14,9 @@ class ItemTransferController extends Controller
 {
     public function index(Request $request)
     {
-        $query = ItemTransfer::with(['item', 'transferredBy', 'receivedBy', 'createdBy']);
+        $query = ItemTransfer::with(['item', 'transferredBy', 'receivedBy', 'createdBy'])
+            ->whereNotNull('item_id')
+            ->whereHas('item');
 
         // Apply filters
         if ($request->filled('status')) {

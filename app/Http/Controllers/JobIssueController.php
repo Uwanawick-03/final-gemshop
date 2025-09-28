@@ -18,6 +18,8 @@ class JobIssueController extends Controller
     public function index()
     {
         $jobIssues = JobIssue::with(['item', 'craftsman', 'assignedTo', 'resolvedBy'])
+            ->whereNotNull('item_id')
+            ->whereHas('item')
             ->orderBy('created_at', 'desc')
             ->paginate(15);
 

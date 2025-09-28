@@ -8,7 +8,7 @@
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('reports.sales') }}">Sales Report</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('reports.sales.index') }}">Sales Report</a></li>
                         <li class="breadcrumb-item active">Detailed Report</li>
                     </ol>
                 </div>
@@ -193,11 +193,11 @@
                                         </div>
                                     </td>
                                     <td>{{ $invoice->salesAssistant->full_name ?? 'N/A' }}</td>
-                                    <td class="text-right">${{ number_format($invoice->subtotal, 2) }}</td>
-                                    <td class="text-right">${{ number_format($invoice->tax_amount, 2) }}</td>
-                                    <td class="text-right">${{ number_format($invoice->discount_amount, 2) }}</td>
+                                    <td class="text-right">Rs {{ number_format($invoice->subtotal, 2) }}</td>
+                                    <td class="text-right">Rs {{ number_format($invoice->tax_amount, 2) }}</td>
+                                    <td class="text-right">Rs {{ number_format($invoice->discount_amount, 2) }}</td>
                                     <td class="text-right">
-                                        <strong>${{ number_format($invoice->total_amount, 2) }}</strong>
+                                        <strong>Rs {{ number_format($invoice->total_amount, 2) }}</strong>
                                     </td>
                                     <td>
                                         <span class="badge bg-{{ $invoice->status_color }}">
@@ -273,19 +273,19 @@
                         </div>
                         <div class="col-md-3">
                             <div class="text-center">
-                                <h4 class="text-success">${{ number_format($invoices->where('status', 'paid')->sum('total_amount'), 2) }}</h4>
+                                <h4 class="text-success">Rs {{ number_format($invoices->where('status', 'paid')->sum('total_amount'), 2) }}</h4>
                                 <p class="text-muted mb-0">Paid Amount</p>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="text-center">
-                                <h4 class="text-danger">${{ number_format($invoices->where('status', 'overdue')->sum('total_amount'), 2) }}</h4>
+                                <h4 class="text-danger">Rs {{ number_format($invoices->where('status', 'overdue')->sum('total_amount'), 2) }}</h4>
                                 <p class="text-muted mb-0">Overdue Amount</p>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="text-center">
-                                <h4 class="text-info">${{ number_format($invoices->avg('total_amount'), 2) }}</h4>
+                                <h4 class="text-info">Rs {{ number_format($invoices->avg('total_amount'), 2) }}</h4>
                                 <p class="text-muted mb-0">Average Invoice Value</p>
                             </div>
                         </div>

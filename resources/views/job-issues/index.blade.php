@@ -131,9 +131,9 @@
                                     </td>
                                     <td>
                                         <div>
-                                            <strong>{{ $jobIssue->item->name }}</strong>
+                                            <strong>{{ $jobIssue->item ? $jobIssue->item->name : 'N/A' }}</strong>
                                             <br>
-                                            <small class="text-muted">{{ $jobIssue->item->item_code }}</small>
+                                            <small class="text-muted">{{ $jobIssue->item ? $jobIssue->item->item_code : 'N/A' }}</small>
                                         </div>
                                     </td>
                                     <td>
@@ -156,7 +156,7 @@
                                         {{ $jobIssue->assignedTo ? $jobIssue->assignedTo->name : 'Unassigned' }}
                                     </td>
                                     <td>
-                                        {{ $jobIssue->issue_date->format('M d, Y') }}
+                                        {{ $jobIssue->issue_date ? $jobIssue->issue_date->format('M d, Y') : 'N/A' }}
                                     </td>
                                     <td>
                                         <div class="btn-group" role="group">

@@ -8,7 +8,7 @@
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('reports.stocks') }}">Stocks Report</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('reports.stocks.index') }}">Stocks Report</a></li>
                         <li class="breadcrumb-item active">Stock Valuation</li>
                     </ol>
                 </div>
@@ -111,7 +111,7 @@
                     <div class="d-flex">
                         <div class="flex-1 overflow-hidden">
                             <p class="text-truncate font-size-14 mb-2">Total Value</p>
-                            <h4 class="mb-0 text-success">${{ number_format($totalValue, 2) }}</h4>
+                            <h4 class="mb-0 text-success">Rs {{ number_format($totalValue, 2) }}</h4>
                         </div>
                         <div class="flex-shrink-0">
                             <div class="avatar-sm rounded-circle bg-success-subtle">
@@ -131,7 +131,7 @@
                     <div class="d-flex">
                         <div class="flex-1 overflow-hidden">
                             <p class="text-truncate font-size-14 mb-2">Average Value per Item</p>
-                            <h4 class="mb-0 text-warning">${{ number_format($totalItems > 0 ? $totalValue / $totalItems : 0, 2) }}</h4>
+                            <h4 class="mb-0 text-warning">Rs {{ number_format($totalItems > 0 ? $totalValue / $totalItems : 0, 2) }}</h4>
                         </div>
                         <div class="flex-shrink-0">
                             <div class="avatar-sm rounded-circle bg-warning-subtle">
@@ -225,21 +225,21 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <strong>${{ number_format($item->cost_price, 2) }}</strong>
+                                        <strong>Rs {{ number_format($item->cost_price, 2) }}</strong>
                                     </td>
                                     <td>
-                                        <strong>${{ number_format($item->selling_price, 2) }}</strong>
+                                        <strong>Rs {{ number_format($item->selling_price, 2) }}</strong>
                                     </td>
                                     <td>
-                                        <strong>${{ number_format($item->wholesale_price, 2) }}</strong>
+                                        <strong>Rs {{ number_format($item->wholesale_price, 2) }}</strong>
                                     </td>
                                     <td>
                                         <strong class="text-{{ $valuationMethod == 'cost' ? 'primary' : ($valuationMethod == 'selling' ? 'success' : 'info') }}">
-                                            ${{ number_format($item->valuation_price, 2) }}
+                                            Rs {{ number_format($item->valuation_price, 2) }}
                                         </strong>
                                     </td>
                                     <td>
-                                        <strong class="text-success">${{ number_format($item->total_value, 2) }}</strong>
+                                        <strong class="text-success">Rs {{ number_format($item->total_value, 2) }}</strong>
                                     </td>
                                     <td>
                                         <span class="badge bg-{{ $item->stock_status_color }}">
@@ -276,19 +276,19 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="text-center">
-                                <h4 class="text-primary">${{ number_format($items->where('total_value', '>', 0)->sum('total_value'), 2) }}</h4>
+                                <h4 class="text-primary">Rs {{ number_format($items->where('total_value', '>', 0)->sum('total_value'), 2) }}</h4>
                                 <p class="text-muted mb-0">Total Value ({{ ucfirst($valuationMethod) }})</p>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="text-center">
-                                <h4 class="text-success">${{ number_format($items->where('total_value', '>', 0)->avg('total_value'), 2) }}</h4>
+                                <h4 class="text-success">Rs {{ number_format($items->where('total_value', '>', 0)->avg('total_value'), 2) }}</h4>
                                 <p class="text-muted mb-0">Average Value per Item</p>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="text-center">
-                                <h4 class="text-info">${{ number_format($items->where('total_value', '>', 0)->max('total_value'), 2) }}</h4>
+                                <h4 class="text-info">Rs {{ number_format($items->where('total_value', '>', 0)->max('total_value'), 2) }}</h4>
                                 <p class="text-muted mb-0">Highest Value Item</p>
                             </div>
                         </div>
@@ -334,10 +334,10 @@
                                         <span class="badge bg-{{ $item->stock_status_color }}">{{ $item->current_stock }}</span>
                                     </td>
                                     <td>
-                                        <strong>${{ number_format($item->valuation_price, 2) }}</strong>
+                                        <strong>Rs {{ number_format($item->valuation_price, 2) }}</strong>
                                     </td>
                                     <td>
-                                        <strong class="text-success">${{ number_format($item->total_value, 2) }}</strong>
+                                        <strong class="text-success">Rs {{ number_format($item->total_value, 2) }}</strong>
                                     </td>
                                 </tr>
                                 @endforeach

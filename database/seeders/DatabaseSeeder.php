@@ -13,22 +13,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
-
-        // Run other seeders
+        // Run production data seeder to clean up test data and create admin users
         $this->call([
-            AdminUserSeeder::class,
-            ItemSeeder::class,
-            CraftsmanSeeder::class,
-            JobIssueSeeder::class,
-            FinishedGoodTransferSeeder::class,
-            WorkshopAdjustmentSeeder::class,
-            CraftsmanReturnSeeder::class,
+            ProductionDataSeeder::class,
         ]);
     }
 }

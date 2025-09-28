@@ -122,8 +122,8 @@
                 <td class="text-center">{{ $item->current_stock }}</td>
                 <td class="text-center">{{ $item->minimum_stock }}</td>
                 <td class="text-center">{{ $item->maximum_stock }}</td>
-                <td class="text-right">${{ number_format($item->cost_price, 2) }}</td>
-                <td class="text-right">${{ number_format($item->selling_price, 2) }}</td>
+                <td class="text-right">Rs {{ number_format($item->cost_price, 2) }}</td>
+                <td class="text-right">Rs {{ number_format($item->selling_price, 2) }}</td>
                 <td class="text-center">
                     <span class="badge badge-{{ $item->stock_status_color }}">
                         {{ ucfirst(str_replace('_', ' ', $item->stock_status)) }}

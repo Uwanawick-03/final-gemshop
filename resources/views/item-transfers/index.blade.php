@@ -265,8 +265,8 @@
                                 </td>
                                 <td>
                                     <div>
-                                        <strong>{{ $transfer->item->name }}</strong><br>
-                                        <small class="text-muted">{{ $transfer->item->item_code }}</small>
+                                        <strong>{{ $transfer->item ? $transfer->item->name : 'N/A' }}</strong><br>
+                                        <small class="text-muted">{{ $transfer->item ? $transfer->item->item_code : 'N/A' }}</small>
                                     </div>
                                 </td>
                                 <td>
@@ -279,7 +279,7 @@
                                 <td>{{ number_format($transfer->quantity, 2) }}</td>
                                 <td>
                                     <div>
-                                        {{ $transfer->transfer_date->format('M d, Y') }}
+                                        {{ $transfer->transfer_date ? $transfer->transfer_date->format('M d, Y') : 'N/A' }}
                                         @if($transfer->is_overdue)
                                             <br><small class="text-danger">
                                                 <i class="fas fa-exclamation-triangle"></i> 
@@ -352,11 +352,7 @@
                                     </span>
                                 </td>
                                 <td>
-                                    @if($transfer->transferredBy)
-                                        {{ $transfer->transferredBy->name }}
-                                    @else
-                                        <span class="text-muted">Not assigned</span>
-                                    @endif
+                                    {{ $transfer->transferredBy ? $transfer->transferredBy->name : 'N/A' }}
                                 </td>
                                 <td>
                                     <div class="btn-group" role="group">

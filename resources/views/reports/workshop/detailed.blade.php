@@ -14,7 +14,7 @@
         </div>
         <div>
             <div class="btn-group" role="group">
-                <a href="{{ route('reports.workshop') }}" class="btn btn-outline-secondary">
+                <a href="{{ route('reports.workshop.index') }}" class="btn btn-outline-secondary">
                     <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
                 </a>
                 <a href="{{ route('reports.workshop.export-pdf', ['type' => 'detailed']) }}" class="btn btn-outline-danger">
@@ -360,8 +360,8 @@
                                         <span class="badge bg-warning ms-1">Expiring Soon</span>
                                     @endif
                                 </td>
-                                <td>${{ number_format($mtc->purchase_price, 2) }}</td>
-                                <td>${{ number_format($mtc->selling_price, 2) }}</td>
+                                <td>Rs {{ number_format($mtc->purchase_price, 2) }}</td>
+                                <td>Rs {{ number_format($mtc->selling_price, 2) }}</td>
                                 <td>
                                     <a href="{{ route('mtcs.show', $mtc) }}" class="btn btn-sm btn-outline-primary">
                                         <i class="fas fa-eye"></i>

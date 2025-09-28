@@ -1,21 +1,30 @@
 @extends('layouts.app')
 
+@section('title', 'Items Management')
+
 @section('content')
-    <div class="container-fluid py-3">
-        <div class="d-flex align-items-center justify-content-between mb-3">
-            <div>
-                <h4 class="mb-1">
-                    <i class="fas fa-gem text-warning me-2"></i>
-                    Items
-                </h4>
-                <div class="small text-muted">Browse and manage items</div>
-            </div>
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">
+                <i class="fas fa-gem me-2"></i>Items Management
+            </h1>
+            <p class="text-muted mb-0">Browse and manage your inventory items</p>
+        </div>
+        <div>
             <a href="{{ route('items.create') }}" class="btn btn-primary">
                 <i class="fas fa-plus me-1"></i> New Item
             </a>
         </div>
+    </div>
 
-        <div class="card shadow-sm">
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-gem me-2"></i>Items Inventory
+                </h6>
+            </div>
             <div class="card-body">
                 <form method="GET" action="{{ route('items.index') }}" class="row g-2 mb-3">
                     <div class="col-md-4">
@@ -45,7 +54,7 @@
                 </form>
 
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
+                    <table class="table table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>Image</th>
@@ -65,20 +74,20 @@
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <img src="{{ $row->image_url }}" alt="{{ $row->name }}" 
-                                                 class="rounded" style="width: 40px; height: 40px; object-fit: cover;">
+                                                 class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
                                         </div>
                                     </td>
                                     <td class="text-muted">{{ $row->item_code }}</td>
                                     <td>
-                                        <a href="{{ route('items.show', $row) }}" class="text-decoration-none">{{ $row->name }}</a>
+                                        <a href="{{ route('items.show', $row) }}" class="text-decoration-none fw-bold">{{ $row->name }}</a>
                                         <div>
                                             <span class="badge bg-{{ $row->stock_status_color }} text-uppercase small">{{ str_replace('_',' ',$row->stock_status) }}</span>
                                         </div>
                                     </td>
                                     <td>{{ $row->category }} @if($row->subcategory)<span class="text-muted">/ {{ $row->subcategory }}</span>@endif</td>
                                     <td>{{ $row->material }} @if($row->gemstone)<span class="text-muted">/ {{ $row->gemstone }}</span>@endif</td>
-                                    <td class="text-end">{{ $row->current_stock }} {{ $row->unit }}</td>
-                                    <td class="text-end">{{ displayAmount($row->selling_price) }}</td>
+                                    <td class="text-end fw-bold">{{ $row->current_stock }} {{ $row->unit }}</td>
+                                    <td class="text-end fw-bold text-primary">{{ displayAmount($row->selling_price) }}</td>
                                     <td>
                                         @php $performance = $row->performance_rating; @endphp
                                         <div class="d-flex align-items-center">
@@ -90,81 +99,134 @@
                                         </div>
                                     </td>
                                     <td class="text-end">
-                                        <a href="{{ route('items.show', $row) }}" class="btn btn-sm btn-outline-secondary">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="{{ route('items.edit', $row) }}" class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ route('items.show', $row) }}" class="btn btn-sm btn-outline-primary" title="View">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{{ route('items.edit', $row) }}" class="btn btn-sm btn-outline-warning" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="9" class="text-center text-muted">No items found.</td>
+                                    <td colspan="9" class="text-center text-muted py-4">
+                                        <i class="fas fa-box fa-3x text-muted mb-3"></i>
+                                        <div>No items found.</div>
+                                    </td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
 
-                <div class="mt-3">
-                    {{ $items->withQueryString()->links() }}
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div class="text-muted">
+                        Showing {{ $items->firstItem() }} to {{ $items->lastItem() }} of {{ $items->total() }} results
+                    </div>
+                    <div>
+                        {{ $items->withQueryString()->links() }}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Statistics Cards -->
+    <!-- Summary Cards -->
     @if($items->count() > 0)
-    <div class="row mt-4">
-        <div class="col-md-3">
-            <div class="card bg-primary text-white">
+    <div class="row mb-4">
+        <!-- In Stock -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h4>{{ $items->where('stock_status', 'in_stock')->count() }}</h4>
-                            <p class="mb-0">In Stock</p>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                In Stock
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ $items->where('stock_status', 'in_stock')->count() }}
+                            </div>
+                            <div class="text-xs text-muted">
+                                Items available for sale
+                            </div>
                         </div>
-                        <i class="fas fa-check-circle fa-2x opacity-75"></i>
+                        <div class="col-auto">
+                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card bg-warning text-white">
+
+        <!-- Low Stock -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h4>{{ $items->where('stock_status', 'low_stock')->count() }}</h4>
-                            <p class="mb-0">Low Stock</p>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Low Stock
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ $items->where('stock_status', 'low_stock')->count() }}
+                            </div>
+                            <div class="text-xs text-muted">
+                                Items need restocking
+                            </div>
                         </div>
-                        <i class="fas fa-exclamation-triangle fa-2x opacity-75"></i>
+                        <div class="col-auto">
+                            <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card bg-danger text-white">
+
+        <!-- Out of Stock -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h4>{{ $items->where('stock_status', 'out_of_stock')->count() }}</h4>
-                            <p class="mb-0">Out of Stock</p>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                Out of Stock
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ $items->where('stock_status', 'out_of_stock')->count() }}
+                            </div>
+                            <div class="text-xs text-muted">
+                                Items completely out of stock
+                            </div>
                         </div>
-                        <i class="fas fa-times-circle fa-2x opacity-75"></i>
+                        <div class="col-auto">
+                            <i class="fas fa-times-circle fa-2x text-gray-300"></i>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card bg-info text-white">
+
+        <!-- Total Items -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h4>{{ $items->count() }}</h4>
-                            <p class="mb-0">Total Items</p>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Total Items
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ $items->count() }}
+                            </div>
+                            <div class="text-xs text-muted">
+                                Total inventory items
+                            </div>
                         </div>
-                        <i class="fas fa-box fa-2x opacity-75"></i>
+                        <div class="col-auto">
+                            <i class="fas fa-box fa-2x text-gray-300"></i>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -172,11 +234,13 @@
     </div>
 
     <!-- Top Performers -->
-    <div class="row mt-4">
+    <div class="row mb-4">
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="fas fa-trophy me-2 text-warning"></i>Top Performing Items</h5>
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-trophy me-2"></i>Top Performing Items
+                    </h6>
                 </div>
                 <div class="card-body">
                     @php
@@ -184,33 +248,53 @@
                     @endphp
                     
                     @if($topPerformers->count() > 0)
-                        @foreach($topPerformers as $index => $item)
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="flex-shrink-0">
-                                    <div class="avatar bg-{{ ['primary', 'success', 'info'][$index] ?? 'secondary' }} text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                        {{ $index + 1 }}
-                                    </div>
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h6 class="mb-1">{{ $item->name }}</h6>
-                                    <small class="text-muted">{{ $item->category }} • {{ $item->material }}</small>
-                                </div>
-                                <div class="flex-shrink-0">
-                                    <strong class="text-success">{{ displayAmount($item->total_sales) }}</strong>
-                                </div>
-                            </div>
-                        @endforeach
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Item</th>
+                                        <th class="text-end">Total Sales</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($topPerformers as $index => $item)
+                                        <tr>
+                                            <td>
+                                                <div class="avatar bg-{{ ['primary', 'success', 'info'][$index] ?? 'secondary' }} text-white rounded-circle d-flex align-items-center justify-content-center mx-auto" style="width: 30px; height: 30px;">
+                                                    {{ $index + 1 }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <div class="fw-bold">{{ $item->name }}</div>
+                                                    <small class="text-muted">{{ $item->category }} • {{ $item->material }}</small>
+                                                </div>
+                                            </td>
+                                            <td class="text-end">
+                                                <strong class="text-success">{{ displayAmount($item->total_sales) }}</strong>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     @else
-                        <p class="text-muted text-center">No performance data available</p>
+                        <div class="text-center py-4">
+                            <i class="fas fa-trophy fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No performance data available</p>
+                        </div>
                     @endif
                 </div>
             </div>
         </div>
         
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="fas fa-chart-pie me-2 text-primary"></i>Inventory Summary</h5>
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-chart-pie me-2"></i>Inventory Summary
+                    </h6>
                 </div>
                 <div class="card-body">
                     @php

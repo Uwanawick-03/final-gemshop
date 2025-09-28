@@ -14,7 +14,7 @@
         </div>
         <div>
             <div class="btn-group" role="group">
-                <a href="{{ route('reports.workshop') }}" class="btn btn-outline-secondary">
+                <a href="{{ route('reports.workshop.index') }}" class="btn btn-outline-secondary">
                     <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
                 </a>
                 <a href="{{ route('reports.workshop.export-pdf', ['type' => 'returns']) }}" class="btn btn-outline-danger">

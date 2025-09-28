@@ -8,7 +8,7 @@
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('reports.stocks') }}">Stocks Report</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('reports.stocks.index') }}">Stocks Report</a></li>
                         <li class="breadcrumb-item active">Detailed Report</li>
                     </ol>
                 </div>
@@ -163,10 +163,10 @@
                                     <td>{{ number_format($item->minimum_stock) }}</td>
                                     <td>{{ number_format($item->maximum_stock) }}</td>
                                     <td>
-                                        <strong>${{ number_format($item->cost_price, 2) }}</strong>
+                                        <strong>Rs {{ number_format($item->cost_price, 2) }}</strong>
                                     </td>
                                     <td>
-                                        <strong>${{ number_format($item->selling_price, 2) }}</strong>
+                                        <strong>Rs {{ number_format($item->selling_price, 2) }}</strong>
                                     </td>
                                     <td>
                                         <span class="badge bg-{{ $item->stock_status_color }}">
@@ -233,13 +233,13 @@
                         </div>
                         <div class="col-md-3">
                             <div class="text-center">
-                                <h4 class="text-success">${{ number_format($items->sum(function($item) { return $item->current_stock * $item->cost_price; }), 2) }}</h4>
+                                <h4 class="text-success">Rs {{ number_format($items->sum(function($item) { return $item->current_stock * $item->cost_price; }), 2) }}</h4>
                                 <p class="text-muted mb-0">Total Stock Value (Cost)</p>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="text-center">
-                                <h4 class="text-info">${{ number_format($items->sum(function($item) { return $item->current_stock * $item->selling_price; }), 2) }}</h4>
+                                <h4 class="text-info">Rs {{ number_format($items->sum(function($item) { return $item->current_stock * $item->selling_price; }), 2) }}</h4>
                                 <p class="text-muted mb-0">Total Stock Value (Selling)</p>
                             </div>
                         </div>

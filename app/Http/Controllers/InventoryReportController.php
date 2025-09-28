@@ -473,7 +473,7 @@ class InventoryReportController extends Controller
         
         $summary = [
             'total_adjustments' => StockAdjustment::count(),
-            'recent_adjustments' => StockAdjustment::latest()->limit(5)->get()
+            'recent_adjustments' => StockAdjustment::with(['createdBy'])->latest()->limit(5)->get()
         ];
 
         if ($hasStatusColumn) {
@@ -497,6 +497,8 @@ class InventoryReportController extends Controller
             'pending_transfers' => ItemTransfer::where('status', 'pending')->count(),
             'completed_transfers' => ItemTransfer::where('status', 'completed')->count(),
             'recent_transfers' => ItemTransfer::with(['item'])
+                ->whereNotNull('item_id')
+                ->whereHas('item')
                 ->latest()
                 ->limit(5)
                 ->get()

@@ -1,99 +1,124 @@
 @extends('layouts.app')
 
+@section('title', 'Sales Report')
+
 @section('content')
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <div class="page-title-box">
-                <div class="page-title-right">
-                    <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Sales Report</li>
-                    </ol>
-                </div>
-                <h4 class="page-title">
-                    <i class="fas fa-chart-line me-2"></i>Sales Report Dashboard
-                </h4>
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">
+                <i class="fas fa-chart-line me-2"></i>Sales Report
+            </h1>
+            <p class="text-muted mb-0">Comprehensive overview of sales performance, customer insights, and revenue trends</p>
+        </div>
+        <div>
+            <div class="btn-group" role="group">
+                <a href="{{ route('reports.sales.export-pdf', ['type' => 'summary']) }}" class="btn btn-outline-danger">
+                    <i class="fas fa-file-pdf me-1"></i>Export PDF
+                </a>
+                <a href="{{ route('reports.sales.export-excel', ['type' => 'detailed']) }}" class="btn btn-outline-success">
+                    <i class="fas fa-file-excel me-1"></i>Export Excel
+                </a>
+                <a href="{{ route('reports.sales.export-csv', ['type' => 'detailed']) }}" class="btn btn-outline-info">
+                    <i class="fas fa-file-csv me-1"></i>Export CSV
+                </a>
             </div>
         </div>
     </div>
 
     <!-- Summary Cards -->
-    <div class="row">
-        <div class="col-xl-3 col-md-6">
-            <div class="card">
+    <div class="row mb-4">
+        <!-- Total Sales -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
-                    <div class="d-flex">
-                        <div class="flex-1 overflow-hidden">
-                            <p class="text-truncate font-size-14 mb-2">Total Sales</p>
-                            <h4 class="mb-0">${{ number_format($summary['total_sales'], 2) }}</h4>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <div class="avatar-sm rounded-circle bg-primary-subtle">
-                                <span class="avatar-title rounded-circle bg-primary text-primary font-size-18">
-                                    <i class="fas fa-dollar-sign"></i>
-                                </span>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Total Sales
                             </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                Rs {{ number_format($summary['total_sales'], 2) }}
+                            </div>
+                            <div class="text-xs text-muted">
+                                Total revenue generated
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6">
-            <div class="card">
+        <!-- Total Invoices -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
-                    <div class="d-flex">
-                        <div class="flex-1 overflow-hidden">
-                            <p class="text-truncate font-size-14 mb-2">Total Invoices</p>
-                            <h4 class="mb-0">{{ number_format($summary['total_invoices']) }}</h4>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <div class="avatar-sm rounded-circle bg-success-subtle">
-                                <span class="avatar-title rounded-circle bg-success text-success font-size-18">
-                                    <i class="fas fa-file-invoice"></i>
-                                </span>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Total Invoices
                             </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ number_format($summary['total_invoices']) }}
+                            </div>
+                            <div class="text-xs text-muted">
+                                Total invoices issued
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-file-invoice fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6">
-            <div class="card">
+        <!-- Paid Amount -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
-                    <div class="d-flex">
-                        <div class="flex-1 overflow-hidden">
-                            <p class="text-truncate font-size-14 mb-2">Paid Amount</p>
-                            <h4 class="mb-0 text-success">${{ number_format($summary['paid_amount'], 2) }}</h4>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <div class="avatar-sm rounded-circle bg-success-subtle">
-                                <span class="avatar-title rounded-circle bg-success text-success font-size-18">
-                                    <i class="fas fa-check-circle"></i>
-                                </span>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Paid Amount
                             </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                Rs {{ number_format($summary['paid_amount'], 2) }}
+                            </div>
+                            <div class="text-xs text-muted">
+                                Amount received
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6">
-            <div class="card">
+        <!-- Overdue Amount -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
                 <div class="card-body">
-                    <div class="d-flex">
-                        <div class="flex-1 overflow-hidden">
-                            <p class="text-truncate font-size-14 mb-2">Overdue Amount</p>
-                            <h4 class="mb-0 text-danger">${{ number_format($summary['overdue_amount'], 2) }}</h4>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <div class="avatar-sm rounded-circle bg-danger-subtle">
-                                <span class="avatar-title rounded-circle bg-danger text-danger font-size-18">
-                                    <i class="fas fa-exclamation-triangle"></i>
-                                </span>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                Overdue Amount
                             </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                Rs {{ number_format($summary['overdue_amount'], 2) }}
+                            </div>
+                            <div class="text-xs text-muted">
+                                Outstanding payments
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
@@ -102,83 +127,97 @@
     </div>
 
     <!-- Additional Summary Cards -->
-    <div class="row">
-        <div class="col-xl-3 col-md-6">
-            <div class="card">
+    <div class="row mb-4">
+        <!-- This Month Sales -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
-                    <div class="d-flex">
-                        <div class="flex-1 overflow-hidden">
-                            <p class="text-truncate font-size-14 mb-2">This Month</p>
-                            <h4 class="mb-0">${{ number_format($summary['this_month_sales'], 2) }}</h4>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <div class="avatar-sm rounded-circle bg-info-subtle">
-                                <span class="avatar-title rounded-circle bg-info text-info font-size-18">
-                                    <i class="fas fa-calendar"></i>
-                                </span>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                This Month
                             </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                Rs {{ number_format($summary['this_month_sales'], 2) }}
+                            </div>
+                            <div class="text-xs text-muted">
+                                Current month sales
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6">
-            <div class="card">
+        <!-- Growth -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-{{ $summary['growth_percentage'] >= 0 ? 'success' : 'danger' }} shadow h-100 py-2">
                 <div class="card-body">
-                    <div class="d-flex">
-                        <div class="flex-1 overflow-hidden">
-                            <p class="text-truncate font-size-14 mb-2">Growth</p>
-                            <h4 class="mb-0 {{ $summary['growth_percentage'] >= 0 ? 'text-success' : 'text-danger' }}">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-{{ $summary['growth_percentage'] >= 0 ? 'success' : 'danger' }} text-uppercase mb-1">
+                                Growth
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 {{ $summary['growth_percentage'] >= 0 ? '+' : '' }}{{ number_format($summary['growth_percentage'], 1) }}%
-                            </h4>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <div class="avatar-sm rounded-circle bg-{{ $summary['growth_percentage'] >= 0 ? 'success' : 'danger' }}-subtle">
-                                <span class="avatar-title rounded-circle bg-{{ $summary['growth_percentage'] >= 0 ? 'success' : 'danger' }} text-{{ $summary['growth_percentage'] >= 0 ? 'success' : 'danger' }} font-size-18">
-                                    <i class="fas fa-{{ $summary['growth_percentage'] >= 0 ? 'arrow-up' : 'arrow-down' }}"></i>
-                                </span>
                             </div>
+                            <div class="text-xs text-muted">
+                                Sales growth rate
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-{{ $summary['growth_percentage'] >= 0 ? 'arrow-up' : 'arrow-down' }} fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6">
-            <div class="card">
+        <!-- Average Invoice Value -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
                 <div class="card-body">
-                    <div class="d-flex">
-                        <div class="flex-1 overflow-hidden">
-                            <p class="text-truncate font-size-14 mb-2">Avg Invoice Value</p>
-                            <h4 class="mb-0">${{ number_format($summary['average_invoice_value'], 2) }}</h4>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <div class="avatar-sm rounded-circle bg-warning-subtle">
-                                <span class="avatar-title rounded-circle bg-warning text-warning font-size-18">
-                                    <i class="fas fa-chart-bar"></i>
-                                </span>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Avg Invoice Value
                             </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                Rs {{ number_format($summary['average_invoice_value'], 2) }}
+                            </div>
+                            <div class="text-xs text-muted">
+                                Average order value
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-chart-bar fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6">
-            <div class="card">
+        <!-- Overdue Invoices -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
                 <div class="card-body">
-                    <div class="d-flex">
-                        <div class="flex-1 overflow-hidden">
-                            <p class="text-truncate font-size-14 mb-2">Overdue Invoices</p>
-                            <h4 class="mb-0 text-danger">{{ number_format($summary['overdue_invoices']) }}</h4>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <div class="avatar-sm rounded-circle bg-danger-subtle">
-                                <span class="avatar-title rounded-circle bg-danger text-danger font-size-18">
-                                    <i class="fas fa-clock"></i>
-                                </span>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                Overdue Invoices
                             </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ number_format($summary['overdue_invoices']) }}
+                            </div>
+                            <div class="text-xs text-muted">
+                                Invoices past due
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clock fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
@@ -189,43 +228,33 @@
     <!-- Quick Actions -->
     <div class="row mb-4">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Quick Actions</h5>
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-bolt me-2"></i>Quick Actions
+                    </h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-2 mb-2">
-                            <a href="{{ route('reports.sales.detailed') }}" class="btn btn-outline-primary w-100">
+                        <div class="col-md-3 mb-2">
+                            <a href="{{ route('reports.sales.detailed') }}" class="btn btn-primary btn-block">
                                 <i class="fas fa-list me-1"></i>Detailed Report
                             </a>
                         </div>
-                        <div class="col-md-2 mb-2">
-                            <a href="{{ route('reports.sales.analytics') }}" class="btn btn-outline-info w-100">
+                        <div class="col-md-3 mb-2">
+                            <a href="{{ route('reports.sales.analytics') }}" class="btn btn-info btn-block">
                                 <i class="fas fa-chart-line me-1"></i>Analytics
                             </a>
                         </div>
-                        <div class="col-md-2 mb-2">
-                            <a href="{{ route('reports.sales.customers') }}" class="btn btn-outline-success w-100">
+                        <div class="col-md-3 mb-2">
+                            <a href="{{ route('reports.sales.customers') }}" class="btn btn-success btn-block">
                                 <i class="fas fa-users me-1"></i>Customer Report
                             </a>
                         </div>
-                        <div class="col-md-2 mb-2">
-                            <a href="{{ route('reports.sales.products') }}" class="btn btn-outline-warning w-100">
+                        <div class="col-md-3 mb-2">
+                            <a href="{{ route('reports.sales.products') }}" class="btn btn-warning btn-block">
                                 <i class="fas fa-boxes me-1"></i>Product Report
                             </a>
-                        </div>
-                        <div class="col-md-4 mb-2">
-                            <div class="dropdown">
-                                <button class="btn btn-outline-secondary w-100 dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                    <i class="fas fa-download me-1"></i>Export
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ route('reports.sales.export-pdf', ['type' => 'summary']) }}">Export PDF</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('reports.sales.export-excel', ['type' => 'detailed']) }}">Export Excel</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('reports.sales.export-csv', ['type' => 'detailed']) }}">Export CSV</a></li>
-                                </ul>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -233,17 +262,19 @@
         </div>
     </div>
 
-    <div class="row">
-        <!-- Recent Sales -->
-        <div class="col-xl-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Recent Sales</h5>
+    <!-- Recent Activities -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-clock me-2"></i>Recent Sales
+                    </h6>
                 </div>
                 <div class="card-body">
                     @if($recentSales->count() > 0)
                         <div class="table-responsive">
-                            <table class="table table-sm">
+                            <table class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th>Invoice</th>
@@ -264,7 +295,7 @@
                                         </td>
                                         <td>{{ $sale->customer->full_name ?? 'N/A' }}</td>
                                         <td>
-                                            <strong>${{ number_format($sale->total_amount, 2) }}</strong>
+                                            <strong>Rs {{ number_format($sale->total_amount, 2) }}</strong>
                                         </td>
                                         <td>
                                             <span class="badge bg-{{ $sale->status_color }}">
@@ -287,15 +318,17 @@
         </div>
 
         <!-- Top Customers -->
-        <div class="col-xl-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Top Customers</h5>
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-users me-2"></i>Top Customers
+                    </h6>
                 </div>
                 <div class="card-body">
                     @if($topCustomers->count() > 0)
                         <div class="table-responsive">
-                            <table class="table table-sm">
+                            <table class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th>Customer</th>
@@ -317,7 +350,7 @@
                                         </td>
                                         <td>{{ $customer->total_orders }}</td>
                                         <td>
-                                            <strong>${{ number_format($customer->total_sales, 2) }}</strong>
+                                            <strong>Rs {{ number_format($customer->total_sales, 2) }}</strong>
                                         </td>
                                     </tr>
                                     @endforeach
@@ -335,89 +368,51 @@
         </div>
     </div>
 
-    <div class="row">
-        <!-- Sales by Status -->
-        <div class="col-xl-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Sales by Status</h5>
+    <!-- Sales Analysis -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-chart-bar me-2"></i>Sales Analysis
+                    </h6>
                 </div>
                 <div class="card-body">
-                    @if($salesByStatus->count() > 0)
-                        <div class="table-responsive">
-                            <table class="table table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Status</th>
-                                        <th>Count</th>
-                                        <th>Total Amount</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($salesByStatus as $status)
-                                    <tr>
-                                        <td>
-                                            <span class="badge bg-{{ $status->status == 'paid' ? 'success' : ($status->status == 'overdue' ? 'danger' : 'info') }}">
-                                                {{ ucfirst($status->status) }}
-                                            </span>
-                                        </td>
-                                        <td>{{ $status->count }}</td>
-                                        <td>
-                                            <strong>${{ number_format($status->total, 2) }}</strong>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                    <div class="row">
+                        <!-- Sales by Status -->
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-primary mb-2">
+                                <i class="fas fa-info-circle me-1"></i>Sales by Status
+                            </h6>
+                            @if($salesByStatus->count() > 0)
+                                @foreach($salesByStatus as $status)
+                                <div class="alert alert-{{ $status->status == 'paid' ? 'success' : ($status->status == 'overdue' ? 'danger' : 'info') }} alert-sm mb-2">
+                                    <strong>{{ ucfirst($status->status) }}</strong><br>
+                                    <small>{{ $status->count }} invoices - Rs {{ number_format($status->total, 2) }}</small>
+                                </div>
+                                @endforeach
+                            @else
+                                <p class="text-muted">No status data available</p>
+                            @endif
                         </div>
-                    @else
-                        <div class="text-center text-muted py-4">
-                            <p>No status data available</p>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
 
-        <!-- Sales by Payment Method -->
-        <div class="col-xl-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Sales by Payment Method</h5>
-                </div>
-                <div class="card-body">
-                    @if($salesByPaymentMethod->count() > 0)
-                        <div class="table-responsive">
-                            <table class="table table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Payment Method</th>
-                                        <th>Count</th>
-                                        <th>Total Amount</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($salesByPaymentMethod as $method)
-                                    <tr>
-                                        <td>
-                                            <span class="badge bg-{{ $method->payment_method == 'cash' ? 'success' : ($method->payment_method == 'card' ? 'info' : 'warning') }}">
-                                                {{ ucfirst($method->payment_method) }}
-                                            </span>
-                                        </td>
-                                        <td>{{ $method->count }}</td>
-                                        <td>
-                                            <strong>${{ number_format($method->total, 2) }}</strong>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                        <!-- Sales by Payment Method -->
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-info mb-2">
+                                <i class="fas fa-credit-card me-1"></i>Sales by Payment Method
+                            </h6>
+                            @if($salesByPaymentMethod->count() > 0)
+                                @foreach($salesByPaymentMethod as $method)
+                                <div class="alert alert-{{ $method->payment_method == 'cash' ? 'success' : ($method->payment_method == 'card' ? 'info' : 'warning') }} alert-sm mb-2">
+                                    <strong>{{ ucfirst($method->payment_method) }}</strong><br>
+                                    <small>{{ $method->count }} transactions - Rs {{ number_format($method->total, 2) }}</small>
+                                </div>
+                                @endforeach
+                            @else
+                                <p class="text-muted">No payment method data available</p>
+                            @endif
                         </div>
-                    @else
-                        <div class="text-center text-muted py-4">
-                            <p>No payment method data available</p>
-                        </div>
-                    @endif
+                    </div>
                 </div>
             </div>
         </div>
@@ -427,13 +422,15 @@
     @if($topSellingItems->count() > 0)
     <div class="row">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Top Selling Items</h5>
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-star me-2"></i>Top Selling Items
+                    </h6>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th>Item</th>
@@ -457,7 +454,7 @@
                                         <span class="badge bg-primary">{{ $item->total_sales }}</span>
                                     </td>
                                     <td>
-                                        <strong>${{ number_format($item->total_revenue, 2) }}</strong>
+                                        <strong>Rs {{ number_format($item->total_revenue, 2) }}</strong>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -474,13 +471,15 @@
     @if($salesPerformance->count() > 0)
     <div class="row">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Sales Performance by Assistant</h5>
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-users me-2"></i>Sales Performance by Assistant
+                    </h6>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th>Assistant</th>
@@ -501,10 +500,10 @@
                                     </td>
                                     <td>{{ $assistant->total_orders }}</td>
                                     <td>
-                                        <strong>${{ number_format($assistant->total_sales, 2) }}</strong>
+                                        <strong>Rs {{ number_format($assistant->total_sales, 2) }}</strong>
                                     </td>
                                     <td>
-                                        ${{ number_format($assistant->total_orders > 0 ? $assistant->total_sales / $assistant->total_orders : 0, 2) }}
+                                        Rs {{ number_format($assistant->total_orders > 0 ? $assistant->total_sales / $assistant->total_orders : 0, 2) }}
                                     </td>
                                 </tr>
                                 @endforeach
@@ -518,6 +517,7 @@
     @endif
 </div>
 @endsection
+
 
 @push('scripts')
 <script>

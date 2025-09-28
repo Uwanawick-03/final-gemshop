@@ -512,13 +512,15 @@ class WorkshopReportController extends Controller
         
         // Get recent job issues
         $jobIssues = JobIssue::with(['item', 'craftsman'])
+            ->whereNotNull('item_id')
+            ->whereHas('item')
             ->latest()
             ->limit(5)
             ->get()
             ->map(function($issue) {
                 return (object)[
                     'type' => 'Job Issue',
-                    'description' => "Issue #{$issue->job_number} - {$issue->item->name}",
+                    'description' => "Issue #{$issue->job_number} - " . ($issue->item ? $issue->item->name : 'Unknown Item'),
                     'date' => $issue->issue_date,
                     'status' => $issue->status,
                     'priority' => $issue->priority
@@ -527,13 +529,15 @@ class WorkshopReportController extends Controller
         
         // Get recent workshop adjustments
         $adjustments = WorkshopAdjustment::with(['item', 'craftsman'])
+            ->whereNotNull('item_id')
+            ->whereHas('item')
             ->latest()
             ->limit(5)
             ->get()
             ->map(function($adjustment) {
                 return (object)[
                     'type' => 'Workshop Adjustment',
-                    'description' => "Adjustment #{$adjustment->reference_number} - {$adjustment->item->name}",
+                    'description' => "Adjustment #{$adjustment->reference_number} - " . ($adjustment->item ? $adjustment->item->name : 'Unknown Item'),
                     'date' => $adjustment->adjustment_date,
                     'status' => $adjustment->status,
                     'priority' => null
@@ -542,13 +546,15 @@ class WorkshopReportController extends Controller
         
         // Get recent transfers
         $transfers = FinishedGoodTransfer::with(['item', 'craftsman'])
+            ->whereNotNull('item_id')
+            ->whereHas('item')
             ->latest()
             ->limit(5)
             ->get()
             ->map(function($transfer) {
                 return (object)[
                     'type' => 'Finished Good Transfer',
-                    'description' => "Transfer #{$transfer->reference_number} - {$transfer->item->name}",
+                    'description' => "Transfer #{$transfer->reference_number} - " . ($transfer->item ? $transfer->item->name : 'Unknown Item'),
                     'date' => $transfer->transfer_date,
                     'status' => $transfer->status,
                     'priority' => null

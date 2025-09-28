@@ -131,7 +131,7 @@
                                     <i class="fas fa-{{ $performance['icon'] }} text-{{ $performance['color'] }} me-2"></i>
                                     <div>
                                         <div class="small fw-bold text-{{ $performance['color'] }}">{{ $performance['rating'] }}</div>
-                                        <div class="small text-muted">${{ number_format($assistant->total_sales + $assistant->total_invoices, 0) }}</div>
+                                        <div class="small text-muted">Rs {{ number_format($assistant->total_sales + $assistant->total_invoices, 0) }}</div>
                                     </div>
                                 </div>
                             </td>
@@ -192,7 +192,6 @@
 </div>
 
 <!-- Enhanced Statistics Dashboard -->
-@if($salesAssistants->count() > 0)
 <div class="row mt-4">
     <div class="col-md-3">
         <div class="card bg-primary text-white">
@@ -275,7 +274,7 @@
                                 <small class="text-muted">{{ $assistant->department ?? 'No Department' }}</small>
                             </div>
                             <div class="flex-shrink-0">
-                                <strong class="text-success">${{ number_format($assistant->total_sales + $assistant->total_invoices, 0) }}</strong>
+                                <strong class="text-success">Rs {{ number_format($assistant->total_sales + $assistant->total_invoices, 0) }}</strong>
                             </div>
                         </div>
                     @endforeach
@@ -303,12 +302,12 @@
                 <div class="row text-center">
                     <div class="col-6 mb-3">
                         <div class="border-end">
-                            <h4 class="mb-1 text-primary">${{ number_format($totalSales, 0) }}</h4>
+                            <h4 class="mb-1 text-primary">Rs {{ number_format($totalSales, 0) }}</h4>
                             <small class="text-muted">Total Sales</small>
                         </div>
                     </div>
                     <div class="col-6 mb-3">
-                        <h4 class="mb-1 text-success">${{ number_format($averageSales, 0) }}</h4>
+                        <h4 class="mb-1 text-success">Rs {{ number_format($averageSales, 0) }}</h4>
                         <small class="text-muted">Average per Assistant</small>
                     </div>
                     <div class="col-6">
@@ -326,5 +325,4 @@
         </div>
     </div>
 </div>
-@endif
 @endsection

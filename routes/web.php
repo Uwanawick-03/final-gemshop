@@ -214,7 +214,7 @@ Route::get('/supplier-returns/{supplierReturn}/export-pdf', [\App\Http\Controlle
     // Reports Routes
     Route::prefix('reports')->name('reports.')->group(function () {
         // Stocks Report Routes
-        Route::get('/stocks', [\App\Http\Controllers\StockReportController::class, 'index'])->name('stocks');
+        Route::get('/stocks', [\App\Http\Controllers\StockReportController::class, 'index'])->name('stocks.index');
         Route::get('/stocks/detailed', [\App\Http\Controllers\StockReportController::class, 'detailed'])->name('stocks.detailed');
         Route::get('/stocks/movements', [\App\Http\Controllers\StockReportController::class, 'movements'])->name('stocks.movements');
         Route::get('/stocks/valuation', [\App\Http\Controllers\StockReportController::class, 'valuation'])->name('stocks.valuation');
@@ -226,7 +226,7 @@ Route::get('/supplier-returns/{supplierReturn}/export-pdf', [\App\Http\Controlle
     // Sales Report Routes
     Route::prefix('reports')->name('reports.')->group(function () {
         // Sales Report Routes
-        Route::get('/sales', [\App\Http\Controllers\SalesReportController::class, 'index'])->name('sales');
+        Route::get('/sales', [\App\Http\Controllers\SalesReportController::class, 'index'])->name('sales.index');
         Route::get('/sales/detailed', [\App\Http\Controllers\SalesReportController::class, 'detailed'])->name('sales.detailed');
         Route::get('/sales/analytics', [\App\Http\Controllers\SalesReportController::class, 'analytics'])->name('sales.analytics');
         Route::get('/sales/customers', [\App\Http\Controllers\SalesReportController::class, 'customers'])->name('sales.customers');
@@ -239,7 +239,7 @@ Route::get('/supplier-returns/{supplierReturn}/export-pdf', [\App\Http\Controlle
     // Inventory Report Routes
     Route::prefix('reports')->name('reports.')->group(function () {
         // Inventory Report Routes
-        Route::get('/inventory', [\App\Http\Controllers\InventoryReportController::class, 'index'])->name('inventory');
+        Route::get('/inventory', [\App\Http\Controllers\InventoryReportController::class, 'index'])->name('inventory.index');
         Route::get('/inventory/detailed', [\App\Http\Controllers\InventoryReportController::class, 'detailed'])->name('inventory.detailed');
         Route::get('/inventory/movements', [\App\Http\Controllers\InventoryReportController::class, 'movements'])->name('inventory.movements');
         Route::get('/inventory/valuation', [\App\Http\Controllers\InventoryReportController::class, 'valuation'])->name('inventory.valuation');
@@ -253,7 +253,7 @@ Route::get('/supplier-returns/{supplierReturn}/export-pdf', [\App\Http\Controlle
     // Workshop Report Routes
     Route::prefix('reports')->name('reports.')->group(function () {
         // Workshop Report Routes
-        Route::get('/workshop', [\App\Http\Controllers\WorkshopReportController::class, 'index'])->name('workshop');
+        Route::get('/workshop', [\App\Http\Controllers\WorkshopReportController::class, 'index'])->name('workshop.index');
         Route::get('/workshop/detailed', [\App\Http\Controllers\WorkshopReportController::class, 'detailed'])->name('workshop.detailed');
         Route::get('/workshop/job-issues', [\App\Http\Controllers\WorkshopReportController::class, 'jobIssues'])->name('workshop.job-issues');
         Route::get('/workshop/adjustments', [\App\Http\Controllers\WorkshopReportController::class, 'adjustments'])->name('workshop.adjustments');

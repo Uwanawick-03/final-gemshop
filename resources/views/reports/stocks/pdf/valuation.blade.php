@@ -136,11 +136,11 @@
                     <p>Total Stock Quantity</p>
                 </div>
                 <div class="summary-cell">
-                    <h3>${{ number_format($items->sum('total_value'), 2) }}</h3>
+                    <h3>Rs {{ number_format($items->sum('total_value'), 2) }}</h3>
                     <p>Total Value</p>
                 </div>
                 <div class="summary-cell">
-                    <h3>${{ number_format($items->count() > 0 ? $items->sum('total_value') / $items->count() : 0, 2) }}</h3>
+                    <h3>Rs {{ number_format($items->count() > 0 ? $items->sum('total_value') / $items->count() : 0, 2) }}</h3>
                     <p>Average Value per Item</p>
                 </div>
             </div>
@@ -175,11 +175,11 @@
                     <span class="badge badge-info">{{ $item->material }}</span>
                 </td>
                 <td class="text-center">{{ $item->current_stock }}</td>
-                <td class="text-right">${{ number_format($item->cost_price, 2) }}</td>
-                <td class="text-right">${{ number_format($item->selling_price, 2) }}</td>
-                <td class="text-right">${{ number_format($item->wholesale_price, 2) }}</td>
-                <td class="text-right"><strong>${{ number_format($item->valuation_price, 2) }}</strong></td>
-                <td class="text-right"><strong>${{ number_format($item->total_value, 2) }}</strong></td>
+                <td class="text-right">Rs {{ number_format($item->cost_price, 2) }}</td>
+                <td class="text-right">Rs {{ number_format($item->selling_price, 2) }}</td>
+                <td class="text-right">Rs {{ number_format($item->wholesale_price, 2) }}</td>
+                <td class="text-right"><strong>Rs {{ number_format($item->valuation_price, 2) }}</strong></td>
+                <td class="text-right"><strong>Rs {{ number_format($item->total_value, 2) }}</strong></td>
                 <td class="text-center">
                     <span class="badge badge-{{ $item->stock_status_color }}">
                         {{ ucfirst(str_replace('_', ' ', $item->stock_status)) }}
@@ -192,7 +192,7 @@
 
     <div class="footer">
         <p>This report was generated automatically by the Gem Shop Management System</p>
-        <p>Total Items: {{ $items->count() }} | Total Value: ${{ number_format($items->sum('total_value'), 2) }} | Generated on {{ now()->format('F d, Y \a\t H:i:s') }}</p>
+        <p>Total Items: {{ $items->count() }} | Total Value: Rs {{ number_format($items->sum('total_value'), 2) }} | Generated on {{ now()->format('F d, Y \a\t H:i:s') }}</p>
     </div>
 </body>
 </html>

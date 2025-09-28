@@ -1,99 +1,124 @@
 @extends('layouts.app')
 
+@section('title', 'Inventory Report')
+
 @section('content')
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <div class="page-title-box">
-                <div class="page-title-right">
-                    <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Inventory Report</li>
-                    </ol>
-                </div>
-                <h4 class="page-title">
-                    <i class="fas fa-warehouse me-2"></i>Inventory Report Dashboard
-                </h4>
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">
+                <i class="fas fa-warehouse me-2"></i>Inventory Report
+            </h1>
+            <p class="text-muted mb-0">Comprehensive overview of inventory adjustments, transfers, and comprehensive analysis</p>
+        </div>
+        <div>
+            <div class="btn-group" role="group">
+                <a href="{{ route('reports.inventory.export-pdf', ['type' => 'summary']) }}" class="btn btn-outline-danger">
+                    <i class="fas fa-file-pdf me-1"></i>Export PDF
+                </a>
+                <a href="{{ route('reports.inventory.export-excel', ['type' => 'detailed']) }}" class="btn btn-outline-success">
+                    <i class="fas fa-file-excel me-1"></i>Export Excel
+                </a>
+                <a href="{{ route('reports.inventory.export-csv', ['type' => 'detailed']) }}" class="btn btn-outline-info">
+                    <i class="fas fa-file-csv me-1"></i>Export CSV
+                </a>
             </div>
         </div>
     </div>
 
     <!-- Summary Cards -->
-    <div class="row">
-        <div class="col-xl-3 col-md-6">
-            <div class="card">
+    <div class="row mb-4">
+        <!-- Total Items -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
-                    <div class="d-flex">
-                        <div class="flex-1 overflow-hidden">
-                            <p class="text-truncate font-size-14 mb-2">Total Items</p>
-                            <h4 class="mb-0">{{ number_format($summary['total_items']) }}</h4>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <div class="avatar-sm rounded-circle bg-primary-subtle">
-                                <span class="avatar-title rounded-circle bg-primary text-primary font-size-18">
-                                    <i class="fas fa-boxes"></i>
-                                </span>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Total Items
                             </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ number_format($summary['total_items']) }}
+                            </div>
+                            <div class="text-xs text-muted">
+                                Total inventory items
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-boxes fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6">
-            <div class="card">
+        <!-- Active Items -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
-                    <div class="d-flex">
-                        <div class="flex-1 overflow-hidden">
-                            <p class="text-truncate font-size-14 mb-2">Active Items</p>
-                            <h4 class="mb-0">{{ number_format($summary['active_items']) }}</h4>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <div class="avatar-sm rounded-circle bg-success-subtle">
-                                <span class="avatar-title rounded-circle bg-success text-success font-size-18">
-                                    <i class="fas fa-check-circle"></i>
-                                </span>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Active Items
                             </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ number_format($summary['active_items']) }}
+                            </div>
+                            <div class="text-xs text-muted">
+                                Currently available items
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6">
-            <div class="card">
+        <!-- Total Stock Value -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
-                    <div class="d-flex">
-                        <div class="flex-1 overflow-hidden">
-                            <p class="text-truncate font-size-14 mb-2">Total Stock Value</p>
-                            <h4 class="mb-0">${{ number_format($summary['total_stock_value'], 2) }}</h4>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <div class="avatar-sm rounded-circle bg-info-subtle">
-                                <span class="avatar-title rounded-circle bg-info text-info font-size-18">
-                                    <i class="fas fa-dollar-sign"></i>
-                                </span>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Stock Value
                             </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                Rs {{ number_format($summary['total_stock_value'], 2) }}
+                            </div>
+                            <div class="text-xs text-muted">
+                                Total inventory value
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6">
-            <div class="card">
+        <!-- Total Quantity -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
                 <div class="card-body">
-                    <div class="d-flex">
-                        <div class="flex-1 overflow-hidden">
-                            <p class="text-truncate font-size-14 mb-2">Total Quantity</p>
-                            <h4 class="mb-0">{{ number_format($summary['total_quantity']) }}</h4>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <div class="avatar-sm rounded-circle bg-warning-subtle">
-                                <span class="avatar-title rounded-circle bg-warning text-warning font-size-18">
-                                    <i class="fas fa-cubes"></i>
-                                </span>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Total Quantity
                             </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ number_format($summary['total_quantity']) }}
+                            </div>
+                            <div class="text-xs text-muted">
+                                Total units in inventory
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-cubes fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
@@ -101,61 +126,47 @@
         </div>
     </div>
 
-    <!-- Alert Cards -->
-    <div class="row">
-        <div class="col-xl-4 col-md-6">
-            <div class="card">
+    <!-- Inventory Alerts -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Inventory Alerts
+                    </h6>
+                </div>
                 <div class="card-body">
-                    <div class="d-flex">
-                        <div class="flex-1 overflow-hidden">
-                            <p class="text-truncate font-size-14 mb-2">Low Stock Items</p>
-                            <h4 class="mb-0 text-warning">{{ number_format($summary['low_stock_items']) }}</h4>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <div class="avatar-sm rounded-circle bg-warning-subtle">
-                                <span class="avatar-title rounded-circle bg-warning text-warning font-size-18">
-                                    <i class="fas fa-exclamation-triangle"></i>
-                                </span>
+                    <div class="row">
+                        <!-- Low Stock Items -->
+                        <div class="col-md-4 mb-3">
+                            <h6 class="text-warning mb-2">
+                                <i class="fas fa-exclamation-triangle me-1"></i>Low Stock Items
+                            </h6>
+                            <div class="alert alert-warning alert-sm mb-2">
+                                <strong>{{ number_format($summary['low_stock_items']) }}</strong><br>
+                                <small>Items need restocking</small>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="col-xl-4 col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <div class="d-flex">
-                        <div class="flex-1 overflow-hidden">
-                            <p class="text-truncate font-size-14 mb-2">Out of Stock</p>
-                            <h4 class="mb-0 text-danger">{{ number_format($summary['out_of_stock_items']) }}</h4>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <div class="avatar-sm rounded-circle bg-danger-subtle">
-                                <span class="avatar-title rounded-circle bg-danger text-danger font-size-18">
-                                    <i class="fas fa-times-circle"></i>
-                                </span>
+                        <!-- Out of Stock Items -->
+                        <div class="col-md-4 mb-3">
+                            <h6 class="text-danger mb-2">
+                                <i class="fas fa-times-circle me-1"></i>Out of Stock Items
+                            </h6>
+                            <div class="alert alert-danger alert-sm mb-2">
+                                <strong>{{ number_format($summary['out_of_stock_items']) }}</strong><br>
+                                <small>Items completely out of stock</small>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="col-xl-4 col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <div class="d-flex">
-                        <div class="flex-1 overflow-hidden">
-                            <p class="text-truncate font-size-14 mb-2">Overstock Items</p>
-                            <h4 class="mb-0 text-info">{{ number_format($summary['overstock_items']) }}</h4>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <div class="avatar-sm rounded-circle bg-info-subtle">
-                                <span class="avatar-title rounded-circle bg-info text-info font-size-18">
-                                    <i class="fas fa-arrow-up"></i>
-                                </span>
+                        <!-- Overstock Items -->
+                        <div class="col-md-4 mb-3">
+                            <h6 class="text-info mb-2">
+                                <i class="fas fa-arrow-up me-1"></i>Overstock Items
+                            </h6>
+                            <div class="alert alert-info alert-sm mb-2">
+                                <strong>{{ number_format($summary['overstock_items']) }}</strong><br>
+                                <small>Items with excess stock</small>
                             </div>
                         </div>
                     </div>
@@ -167,48 +178,43 @@
     <!-- Quick Actions -->
     <div class="row mb-4">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Quick Actions</h5>
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-bolt me-2"></i>Quick Actions
+                    </h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-2 mb-2">
-                            <a href="{{ route('reports.inventory.detailed') }}" class="btn btn-outline-primary w-100">
+                            <a href="{{ route('reports.inventory.detailed') }}" class="btn btn-primary btn-block">
                                 <i class="fas fa-list me-1"></i>Detailed Report
                             </a>
                         </div>
                         <div class="col-md-2 mb-2">
-                            <a href="{{ route('reports.inventory.movements') }}" class="btn btn-outline-info w-100">
+                            <a href="{{ route('reports.inventory.movements') }}" class="btn btn-info btn-block">
                                 <i class="fas fa-exchange-alt me-1"></i>Movements
                             </a>
                         </div>
                         <div class="col-md-2 mb-2">
-                            <a href="{{ route('reports.inventory.valuation') }}" class="btn btn-outline-success w-100">
+                            <a href="{{ route('reports.inventory.valuation') }}" class="btn btn-success btn-block">
                                 <i class="fas fa-calculator me-1"></i>Valuation
                             </a>
                         </div>
                         <div class="col-md-2 mb-2">
-                            <a href="{{ route('reports.inventory.adjustments') }}" class="btn btn-outline-warning w-100">
+                            <a href="{{ route('reports.inventory.adjustments') }}" class="btn btn-warning btn-block">
                                 <i class="fas fa-balance-scale me-1"></i>Adjustments
                             </a>
                         </div>
                         <div class="col-md-2 mb-2">
-                            <a href="{{ route('reports.inventory.transfers') }}" class="btn btn-outline-secondary w-100">
+                            <a href="{{ route('reports.inventory.transfers') }}" class="btn btn-secondary btn-block">
                                 <i class="fas fa-truck me-1"></i>Transfers
                             </a>
                         </div>
                         <div class="col-md-2 mb-2">
-                            <div class="dropdown">
-                                <button class="btn btn-outline-dark w-100 dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                    <i class="fas fa-download me-1"></i>Export
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ route('reports.inventory.export-pdf', ['type' => 'summary']) }}">Export PDF</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('reports.inventory.export-excel', ['type' => 'detailed']) }}">Export Excel</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('reports.inventory.export-csv', ['type' => 'detailed']) }}">Export CSV</a></li>
-                                </ul>
-                            </div>
+                            <a href="{{ route('reports.inventory.export-pdf', ['type' => 'summary']) }}" class="btn btn-danger btn-block">
+                                <i class="fas fa-file-pdf me-1"></i>Export PDF
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -216,17 +222,19 @@
         </div>
     </div>
 
-    <div class="row">
-        <!-- Low Stock Items -->
-        <div class="col-xl-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Low Stock Items</h5>
+    <!-- Recent Activities -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Low Stock Items
+                    </h6>
                 </div>
                 <div class="card-body">
                     @if($inventoryAlerts['low_stock']->count() > 0)
                         <div class="table-responsive">
-                            <table class="table table-sm">
+                            <table class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th>Item</th>
@@ -270,15 +278,17 @@
         </div>
 
         <!-- Out of Stock Items -->
-        <div class="col-xl-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Out of Stock Items</h5>
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-times-circle me-2"></i>Out of Stock Items
+                    </h6>
                 </div>
                 <div class="card-body">
                     @if($inventoryAlerts['out_of_stock']->count() > 0)
                         <div class="table-responsive">
-                            <table class="table table-sm">
+                            <table class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th>Item</th>
@@ -316,81 +326,65 @@
         </div>
     </div>
 
-    <div class="row">
-        <!-- Inventory by Category -->
-        <div class="col-xl-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Inventory by Category</h5>
+    <!-- Inventory Analysis -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-chart-bar me-2"></i>Inventory Analysis
+                    </h6>
                 </div>
                 <div class="card-body">
-                    @if($inventoryByCategory->count() > 0)
-                        <div class="table-responsive">
-                            <table class="table table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Category</th>
-                                        <th>Items</th>
-                                        <th>Total Stock</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($inventoryByCategory as $category)
-                                    <tr>
-                                        <td><strong>{{ $category->category }}</strong></td>
-                                        <td>{{ $category->item_count }}</td>
-                                        <td>
-                                            <span class="badge bg-primary">{{ number_format($category->total_stock) }}</span>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                    <div class="row">
+                        <!-- Inventory by Category -->
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-primary mb-2">
+                                <i class="fas fa-tags me-1"></i>Inventory by Category
+                            </h6>
+                            @if($inventoryByCategory->count() > 0)
+                                @foreach($inventoryByCategory->take(5) as $category)
+                                <div class="alert alert-primary alert-sm mb-2">
+                                    <strong>{{ $category->category }}</strong><br>
+                                    <small>{{ $category->item_count }} items - Total Stock: {{ number_format($category->total_stock) }}</small>
+                                </div>
+                                @endforeach
+                                @if($inventoryByCategory->count() > 5)
+                                <div class="text-center">
+                                    <a href="{{ route('reports.inventory.detailed') }}" class="btn btn-sm btn-outline-primary">
+                                        View All Categories
+                                    </a>
+                                </div>
+                                @endif
+                            @else
+                                <p class="text-muted">No category data available</p>
+                            @endif
                         </div>
-                    @else
-                        <div class="text-center text-muted py-4">
-                            <p>No category data available</p>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
 
-        <!-- Inventory by Material -->
-        <div class="col-xl-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Inventory by Material</h5>
-                </div>
-                <div class="card-body">
-                    @if($inventoryByMaterial->count() > 0)
-                        <div class="table-responsive">
-                            <table class="table table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Material</th>
-                                        <th>Items</th>
-                                        <th>Total Stock</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($inventoryByMaterial as $material)
-                                    <tr>
-                                        <td><strong>{{ $material->material }}</strong></td>
-                                        <td>{{ $material->item_count }}</td>
-                                        <td>
-                                            <span class="badge bg-info">{{ number_format($material->total_stock) }}</span>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                        <!-- Inventory by Material -->
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-info mb-2">
+                                <i class="fas fa-gem me-1"></i>Inventory by Material
+                            </h6>
+                            @if($inventoryByMaterial->count() > 0)
+                                @foreach($inventoryByMaterial->take(5) as $material)
+                                <div class="alert alert-info alert-sm mb-2">
+                                    <strong>{{ $material->material }}</strong><br>
+                                    <small>{{ $material->item_count }} items - Total Stock: {{ number_format($material->total_stock) }}</small>
+                                </div>
+                                @endforeach
+                                @if($inventoryByMaterial->count() > 5)
+                                <div class="text-center">
+                                    <a href="{{ route('reports.inventory.detailed') }}" class="btn btn-sm btn-outline-info">
+                                        View All Materials
+                                    </a>
+                                </div>
+                                @endif
+                            @else
+                                <p class="text-muted">No material data available</p>
+                            @endif
                         </div>
-                    @else
-                        <div class="text-center text-muted py-4">
-                            <p>No material data available</p>
-                        </div>
-                    @endif
+                    </div>
                 </div>
             </div>
         </div>
@@ -400,13 +394,15 @@
     @if($stockAdjustmentsSummary['recent_adjustments']->count() > 0)
     <div class="row">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Recent Stock Adjustments</h5>
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-balance-scale me-2"></i>Recent Stock Adjustments
+                    </h6>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th>Adjustment #</th>
@@ -443,7 +439,7 @@
                                                 <span class="badge bg-secondary">N/A</span>
                                             @endif
                                         </td>
-                                    <td>{{ $adjustment->createdBy->name ?? 'N/A' }}</td>
+                                    <td>{{ $adjustment->createdBy ? $adjustment->createdBy->name : 'N/A' }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -459,13 +455,15 @@
     @if($itemTransfersSummary['recent_transfers']->count() > 0)
     <div class="row">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Recent Item Transfers</h5>
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-truck me-2"></i>Recent Item Transfers
+                    </h6>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th>Transfer #</th>
@@ -482,13 +480,13 @@
                                     <td>
                                         <strong>{{ $transfer->reference_number }}</strong>
                                     </td>
-                                    <td>{{ $transfer->item->name }}</td>
+                                    <td>{{ $transfer->item ? $transfer->item->name : 'N/A' }}</td>
                                     <td>{{ $transfer->from_location }}</td>
                                     <td>{{ $transfer->to_location }}</td>
                                     <td>{{ $transfer->quantity }}</td>
                                     <td>
-                                        <span class="badge bg-{{ $transfer->status_color }}">
-                                            {{ $transfer->status_label }}
+                                        <span class="badge bg-{{ $transfer->status_color ?? 'secondary' }}">
+                                            {{ $transfer->status_label ?? ucfirst($transfer->status ?? 'Unknown') }}
                                         </span>
                                     </td>
                                 </tr>
@@ -505,27 +503,29 @@
     <!-- Inventory Valuation Summary -->
     <div class="row">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Inventory Valuation Summary</h5>
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-calculator me-2"></i>Inventory Valuation Summary
+                    </h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-4">
                             <div class="text-center">
-                                <h4 class="text-primary">${{ number_format($inventoryValuation['cost_value'], 2) }}</h4>
+                                <h4 class="text-primary">Rs {{ number_format($inventoryValuation['cost_value'], 2) }}</h4>
                                 <p class="text-muted mb-0">Cost Value</p>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="text-center">
-                                <h4 class="text-success">${{ number_format($inventoryValuation['selling_value'], 2) }}</h4>
+                                <h4 class="text-success">Rs {{ number_format($inventoryValuation['selling_value'], 2) }}</h4>
                                 <p class="text-muted mb-0">Selling Value</p>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="text-center">
-                                <h4 class="text-info">${{ number_format($inventoryValuation['wholesale_value'], 2) }}</h4>
+                                <h4 class="text-info">Rs {{ number_format($inventoryValuation['wholesale_value'], 2) }}</h4>
                                 <p class="text-muted mb-0">Wholesale Value</p>
                             </div>
                         </div>
@@ -536,6 +536,7 @@
     </div>
 </div>
 @endsection
+
 
 @push('scripts')
 <script>

@@ -165,9 +165,29 @@
                             <i class="fas fa-gem text-warning"></i>
                             {{ config('app.name') }}
                         </h4>
-                        <p class="text-muted text-center mb-4">
-                            <i class="fas fa-user"></i> User - {{ Auth::user()->name ?? 'Guest' }}
-                        </p>
+                        <div class="text-center mb-4">
+                            <p class="text-muted mb-2">
+                                <i class="fas fa-user"></i> {{ Auth::user()->name ?? 'Guest' }}
+                            </p>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-cog me-1"></i> Account
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-user-edit me-2"></i>Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                                            @csrf
+                                            <button type="submit" class="dropdown-item text-danger">
+                                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
 
                         <!-- Currency Display Switcher -->
                         <div class="text-center mb-4">
@@ -299,16 +319,16 @@
                         <div class="px-3 mb-3 mt-4">
                             <h6 class="text-muted text-uppercase small fw-bold">Reports</h6>
                         </div>
-                        <a class="nav-link" href="{{ route('reports.stocks') }}">
+                        <a class="nav-link" href="{{ route('reports.stocks.index') }}">
                             <i class="fas fa-boxes me-2"></i> Stocks Report
                         </a>
-                        <a class="nav-link" href="{{ route('reports.sales') }}">
+                        <a class="nav-link" href="{{ route('reports.sales.index') }}">
                             <i class="fas fa-chart-line me-2"></i> Sales Report
                         </a>
-                        <a class="nav-link" href="{{ route('reports.inventory') }}">
+                        <a class="nav-link" href="{{ route('reports.inventory.index') }}">
                             <i class="fas fa-warehouse me-2"></i> Inventory Report
                         </a>
-                        <a class="nav-link" href="{{ route('reports.workshop') }}">
+                        <a class="nav-link" href="{{ route('reports.workshop.index') }}">
                             <i class="fas fa-hammer me-2"></i> Workshop Report
                         </a>
                         <a class="nav-link" href="{{ route('reports.guide-listing') }}">
